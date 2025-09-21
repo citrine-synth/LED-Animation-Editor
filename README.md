@@ -48,4 +48,4 @@ Drag blocks from the toolbox to create your animation sequence. The program alwa
 - add a tool to reverse animations (just re name the files in reverse order)
 - add usb upload support for the display
 - fix electron focus issue where after loading a folder you need to switch to another window and back to be able to edit text fields
-
+- GPIO trigger block is currently broken and does nothing or is unpredictable

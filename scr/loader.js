@@ -1,4 +1,4 @@
-// loader.js - Fixed version that prevents duplicate blocks and gesture issues
+
 
 // Helper function to create a block from JSON without rendering
 function createBlockFromJson(workspace, json, processedBlocks = new Set()) {

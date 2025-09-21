@@ -1,3 +1,8 @@
+
+<img width="1922" height="1036" alt="image" src="https://github.com/user-attachments/assets/e1af478b-ad6f-47a7-af5c-3e1aad4d8ae9" />
+<img width="1928" height="1040" alt="image" src="https://github.com/user-attachments/assets/45048d3d-55f7-49b2-b41a-1c8bb991febd" />
+
+
 # LED Display Editor
 
 A visual programming environment for creating animations on 32x24 LED displays. Built with Blockly and Electron.

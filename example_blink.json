@@ -1,0 +1,930 @@
+{
+  "type": "start",
+  "id": ";|pc16^{Dh,D1v9AYM+z",
+  "actions": [
+    {
+      "type": "set_color",
+      "id": "{D`y;WgwQxcb!l68L+qK",
+      "color": "#00FFFF",
+      "next": {
+        "type": "display_image",
+        "id": "X`6Rzz!wJqH.pQ3vS;k;",
+        "filename": "eye_open.raw",
+        "next": {
+          "type": "forever",
+          "id": "XAjghIsj3ddyu:u{A6eg",
+          "loop_body": [
+            {
+              "type": "wait",
+              "id": "fd$^KG@/#?*oG2)~`)P6",
+              "time": 5,
+              "next": {
+                "type": "if_gpio",
+                "id": "W2i@)20?DTW(!PX{uevN",
+                "pin": 2,
+                "state": "HIGH",
+                "true_branch": [
+                  {
+                    "type": "set_color",
+                    "id": "/1fG5T(N9MpjTQBU0^sI",
+                    "color": "#FF0000",
+                    "next": {
+                      "type": "display_image",
+                      "id": "T5Z`PbC63{AXe%x6?FBE",
+                      "filename": "angry.raw"
+                    }
+                  },
+                  {
+                    "type": "display_image",
+                    "id": "T5Z`PbC63{AXe%x6?FBE",
+                    "filename": "angry.raw"
+                  }
+                ],
+                "false_branch": [
+                  {
+                    "type": "set_color",
+                    "id": "d2~0G%:%m0vx!MvB?ECj",
+                    "color": "#00FFFF",
+                    "next": {
+                      "type": "wait",
+                      "id": "$D6Je!-Q}`9e}^knN[U$",
+                      "time": {
+                        "type": "random_range",
+                        "min": 3000,
+                        "max": 10000
+                      },
+                      "next": {
+                        "type": "play_animation",
+                        "id": "a,|^z]UDD^Al5s0c3LS~",
+                        "folder": "close_eye",
+                        "play_for": 200,
+                        "next": {
+                          "type": "wait",
+                          "id": "WD[*nmE(0yMDkPox0rwl",
+                          "time": 50,
+                          "next": {
+                            "type": "play_animation",
+                            "id": "K*,(3sVT@T9gfKVIYDd:",
+                            "folder": "open_eye",
+                            "play_for": 200,
+                            "next": {
+                              "type": "display_image",
+                              "id": "CV6;Req82qHJ;oxzGph|",
+                              "filename": "eye_open.raw"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "id": "$D6Je!-Q}`9e}^knN[U$",
+                    "time": {
+                      "type": "random_range",
+                      "min": 3000,
+                      "max": 10000
+                    },
+                    "next": {
+                      "type": "play_animation",
+                      "id": "a,|^z]UDD^Al5s0c3LS~",
+                      "folder": "close_eye",
+                      "play_for": 200,
+                      "next": {
+                        "type": "wait",
+                        "id": "WD[*nmE(0yMDkPox0rwl",
+                        "time": 50,
+                        "next": {
+                          "type": "play_animation",
+                          "id": "K*,(3sVT@T9gfKVIYDd:",
+                          "folder": "open_eye",
+                          "play_for": 200,
+                          "next": {
+                            "type": "display_image",
+                            "id": "CV6;Req82qHJ;oxzGph|",
+                            "filename": "eye_open.raw"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type": "play_animation",
+                    "id": "a,|^z]UDD^Al5s0c3LS~",
+                    "folder": "close_eye",
+                    "play_for": 200,
+                    "next": {
+                      "type": "wait",
+                      "id": "WD[*nmE(0yMDkPox0rwl",
+                      "time": 50,
+                      "next": {
+                        "type": "play_animation",
+                        "id": "K*,(3sVT@T9gfKVIYDd:",
+                        "folder": "open_eye",
+                        "play_for": 200,
+                        "next": {
+                          "type": "display_image",
+                          "id": "CV6;Req82qHJ;oxzGph|",
+                          "filename": "eye_open.raw"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "id": "WD[*nmE(0yMDkPox0rwl",
+                    "time": 50,
+                    "next": {
+                      "type": "play_animation",
+                      "id": "K*,(3sVT@T9gfKVIYDd:",
+                      "folder": "open_eye",
+                      "play_for": 200,
+                      "next": {
+                        "type": "display_image",
+                        "id": "CV6;Req82qHJ;oxzGph|",
+                        "filename": "eye_open.raw"
+                      }
+                    }
+                  },
+                  {
+                    "type": "play_animation",
+                    "id": "K*,(3sVT@T9gfKVIYDd:",
+                    "folder": "open_eye",
+                    "play_for": 200,
+                    "next": {
+                      "type": "display_image",
+                      "id": "CV6;Req82qHJ;oxzGph|",
+                      "filename": "eye_open.raw"
+                    }
+                  },
+                  {
+                    "type": "display_image",
+                    "id": "CV6;Req82qHJ;oxzGph|",
+                    "filename": "eye_open.raw"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "if_gpio",
+              "id": "W2i@)20?DTW(!PX{uevN",
+              "pin": 2,
+              "state": "HIGH",
+              "true_branch": [
+                {
+                  "type": "set_color",
+                  "id": "/1fG5T(N9MpjTQBU0^sI",
+                  "color": "#FF0000",
+                  "next": {
+                    "type": "display_image",
+                    "id": "T5Z`PbC63{AXe%x6?FBE",
+                    "filename": "angry.raw"
+                  }
+                },
+                {
+                  "type": "display_image",
+                  "id": "T5Z`PbC63{AXe%x6?FBE",
+                  "filename": "angry.raw"
+                }
+              ],
+              "false_branch": [
+                {
+                  "type": "set_color",
+                  "id": "d2~0G%:%m0vx!MvB?ECj",
+                  "color": "#00FFFF",
+                  "next": {
+                    "type": "wait",
+                    "id": "$D6Je!-Q}`9e}^knN[U$",
+                    "time": {
+                      "type": "random_range",
+                      "min": 3000,
+                      "max": 10000
+                    },
+                    "next": {
+                      "type": "play_animation",
+                      "id": "a,|^z]UDD^Al5s0c3LS~",
+                      "folder": "close_eye",
+                      "play_for": 200,
+                      "next": {
+                        "type": "wait",
+                        "id": "WD[*nmE(0yMDkPox0rwl",
+                        "time": 50,
+                        "next": {
+                          "type": "play_animation",
+                          "id": "K*,(3sVT@T9gfKVIYDd:",
+                          "folder": "open_eye",
+                          "play_for": 200,
+                          "next": {
+                            "type": "display_image",
+                            "id": "CV6;Req82qHJ;oxzGph|",
+                            "filename": "eye_open.raw"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "wait",
+                  "id": "$D6Je!-Q}`9e}^knN[U$",
+                  "time": {
+                    "type": "random_range",
+                    "min": 3000,
+                    "max": 10000
+                  },
+                  "next": {
+                    "type": "play_animation",
+                    "id": "a,|^z]UDD^Al5s0c3LS~",
+                    "folder": "close_eye",
+                    "play_for": 200,
+                    "next": {
+                      "type": "wait",
+                      "id": "WD[*nmE(0yMDkPox0rwl",
+                      "time": 50,
+                      "next": {
+                        "type": "play_animation",
+                        "id": "K*,(3sVT@T9gfKVIYDd:",
+                        "folder": "open_eye",
+                        "play_for": 200,
+                        "next": {
+                          "type": "display_image",
+                          "id": "CV6;Req82qHJ;oxzGph|",
+                          "filename": "eye_open.raw"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "play_animation",
+                  "id": "a,|^z]UDD^Al5s0c3LS~",
+                  "folder": "close_eye",
+                  "play_for": 200,
+                  "next": {
+                    "type": "wait",
+                    "id": "WD[*nmE(0yMDkPox0rwl",
+                    "time": 50,
+                    "next": {
+                      "type": "play_animation",
+                      "id": "K*,(3sVT@T9gfKVIYDd:",
+                      "folder": "open_eye",
+                      "play_for": 200,
+                      "next": {
+                        "type": "display_image",
+                        "id": "CV6;Req82qHJ;oxzGph|",
+                        "filename": "eye_open.raw"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "wait",
+                  "id": "WD[*nmE(0yMDkPox0rwl",
+                  "time": 50,
+                  "next": {
+                    "type": "play_animation",
+                    "id": "K*,(3sVT@T9gfKVIYDd:",
+                    "folder": "open_eye",
+                    "play_for": 200,
+                    "next": {
+                      "type": "display_image",
+                      "id": "CV6;Req82qHJ;oxzGph|",
+                      "filename": "eye_open.raw"
+                    }
+                  }
+                },
+                {
+                  "type": "play_animation",
+                  "id": "K*,(3sVT@T9gfKVIYDd:",
+                  "folder": "open_eye",
+                  "play_for": 200,
+                  "next": {
+                    "type": "display_image",
+                    "id": "CV6;Req82qHJ;oxzGph|",
+                    "filename": "eye_open.raw"
+                  }
+                },
+                {
+                  "type": "display_image",
+                  "id": "CV6;Req82qHJ;oxzGph|",
+                  "filename": "eye_open.raw"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "display_image",
+      "id": "X`6Rzz!wJqH.pQ3vS;k;",
+      "filename": "eye_open.raw",
+      "next": {
+        "type": "forever",
+        "id": "XAjghIsj3ddyu:u{A6eg",
+        "loop_body": [
+          {
+            "type": "wait",
+            "id": "fd$^KG@/#?*oG2)~`)P6",
+            "time": 5,
+            "next": {
+              "type": "if_gpio",
+              "id": "W2i@)20?DTW(!PX{uevN",
+              "pin": 2,
+              "state": "HIGH",
+              "true_branch": [
+                {
+                  "type": "set_color",
+                  "id": "/1fG5T(N9MpjTQBU0^sI",
+                  "color": "#FF0000",
+                  "next": {
+                    "type": "display_image",
+                    "id": "T5Z`PbC63{AXe%x6?FBE",
+                    "filename": "angry.raw"
+                  }
+                },
+                {
+                  "type": "display_image",
+                  "id": "T5Z`PbC63{AXe%x6?FBE",
+                  "filename": "angry.raw"
+                }
+              ],
+              "false_branch": [
+                {
+                  "type": "set_color",
+                  "id": "d2~0G%:%m0vx!MvB?ECj",
+                  "color": "#00FFFF",
+                  "next": {
+                    "type": "wait",
+                    "id": "$D6Je!-Q}`9e}^knN[U$",
+                    "time": {
+                      "type": "random_range",
+                      "min": 3000,
+                      "max": 10000
+                    },
+                    "next": {
+                      "type": "play_animation",
+                      "id": "a,|^z]UDD^Al5s0c3LS~",
+                      "folder": "close_eye",
+                      "play_for": 200,
+                      "next": {
+                        "type": "wait",
+                        "id": "WD[*nmE(0yMDkPox0rwl",
+                        "time": 50,
+                        "next": {
+                          "type": "play_animation",
+                          "id": "K*,(3sVT@T9gfKVIYDd:",
+                          "folder": "open_eye",
+                          "play_for": 200,
+                          "next": {
+                            "type": "display_image",
+                            "id": "CV6;Req82qHJ;oxzGph|",
+                            "filename": "eye_open.raw"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "wait",
+                  "id": "$D6Je!-Q}`9e}^knN[U$",
+                  "time": {
+                    "type": "random_range",
+                    "min": 3000,
+                    "max": 10000
+                  },
+                  "next": {
+                    "type": "play_animation",
+                    "id": "a,|^z]UDD^Al5s0c3LS~",
+                    "folder": "close_eye",
+                    "play_for": 200,
+                    "next": {
+                      "type": "wait",
+                      "id": "WD[*nmE(0yMDkPox0rwl",
+                      "time": 50,
+                      "next": {
+                        "type": "play_animation",
+                        "id": "K*,(3sVT@T9gfKVIYDd:",
+                        "folder": "open_eye",
+                        "play_for": 200,
+                        "next": {
+                          "type": "display_image",
+                          "id": "CV6;Req82qHJ;oxzGph|",
+                          "filename": "eye_open.raw"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "play_animation",
+                  "id": "a,|^z]UDD^Al5s0c3LS~",
+                  "folder": "close_eye",
+                  "play_for": 200,
+                  "next": {
+                    "type": "wait",
+                    "id": "WD[*nmE(0yMDkPox0rwl",
+                    "time": 50,
+                    "next": {
+                      "type": "play_animation",
+                      "id": "K*,(3sVT@T9gfKVIYDd:",
+                      "folder": "open_eye",
+                      "play_for": 200,
+                      "next": {
+                        "type": "display_image",
+                        "id": "CV6;Req82qHJ;oxzGph|",
+                        "filename": "eye_open.raw"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "wait",
+                  "id": "WD[*nmE(0yMDkPox0rwl",
+                  "time": 50,
+                  "next": {
+                    "type": "play_animation",
+                    "id": "K*,(3sVT@T9gfKVIYDd:",
+                    "folder": "open_eye",
+                    "play_for": 200,
+                    "next": {
+                      "type": "display_image",
+                      "id": "CV6;Req82qHJ;oxzGph|",
+                      "filename": "eye_open.raw"
+                    }
+                  }
+                },
+                {
+                  "type": "play_animation",
+                  "id": "K*,(3sVT@T9gfKVIYDd:",
+                  "folder": "open_eye",
+                  "play_for": 200,
+                  "next": {
+                    "type": "display_image",
+                    "id": "CV6;Req82qHJ;oxzGph|",
+                    "filename": "eye_open.raw"
+                  }
+                },
+                {
+                  "type": "display_image",
+                  "id": "CV6;Req82qHJ;oxzGph|",
+                  "filename": "eye_open.raw"
+                }
+              ]
+            }
+          },
+          {
+            "type": "if_gpio",
+            "id": "W2i@)20?DTW(!PX{uevN",
+            "pin": 2,
+            "state": "HIGH",
+            "true_branch": [
+              {
+                "type": "set_color",
+                "id": "/1fG5T(N9MpjTQBU0^sI",
+                "color": "#FF0000",
+                "next": {
+                  "type": "display_image",
+                  "id": "T5Z`PbC63{AXe%x6?FBE",
+                  "filename": "angry.raw"
+                }
+              },
+              {
+                "type": "display_image",
+                "id": "T5Z`PbC63{AXe%x6?FBE",
+                "filename": "angry.raw"
+              }
+            ],
+            "false_branch": [
+              {
+                "type": "set_color",
+                "id": "d2~0G%:%m0vx!MvB?ECj",
+                "color": "#00FFFF",
+                "next": {
+                  "type": "wait",
+                  "id": "$D6Je!-Q}`9e}^knN[U$",
+                  "time": {
+                    "type": "random_range",
+                    "min": 3000,
+                    "max": 10000
+                  },
+                  "next": {
+                    "type": "play_animation",
+                    "id": "a,|^z]UDD^Al5s0c3LS~",
+                    "folder": "close_eye",
+                    "play_for": 200,
+                    "next": {
+                      "type": "wait",
+                      "id": "WD[*nmE(0yMDkPox0rwl",
+                      "time": 50,
+                      "next": {
+                        "type": "play_animation",
+                        "id": "K*,(3sVT@T9gfKVIYDd:",
+                        "folder": "open_eye",
+                        "play_for": 200,
+                        "next": {
+                          "type": "display_image",
+                          "id": "CV6;Req82qHJ;oxzGph|",
+                          "filename": "eye_open.raw"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "wait",
+                "id": "$D6Je!-Q}`9e}^knN[U$",
+                "time": {
+                  "type": "random_range",
+                  "min": 3000,
+                  "max": 10000
+                },
+                "next": {
+                  "type": "play_animation",
+                  "id": "a,|^z]UDD^Al5s0c3LS~",
+                  "folder": "close_eye",
+                  "play_for": 200,
+                  "next": {
+                    "type": "wait",
+                    "id": "WD[*nmE(0yMDkPox0rwl",
+                    "time": 50,
+                    "next": {
+                      "type": "play_animation",
+                      "id": "K*,(3sVT@T9gfKVIYDd:",
+                      "folder": "open_eye",
+                      "play_for": 200,
+                      "next": {
+                        "type": "display_image",
+                        "id": "CV6;Req82qHJ;oxzGph|",
+                        "filename": "eye_open.raw"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "play_animation",
+                "id": "a,|^z]UDD^Al5s0c3LS~",
+                "folder": "close_eye",
+                "play_for": 200,
+                "next": {
+                  "type": "wait",
+                  "id": "WD[*nmE(0yMDkPox0rwl",
+                  "time": 50,
+                  "next": {
+                    "type": "play_animation",
+                    "id": "K*,(3sVT@T9gfKVIYDd:",
+                    "folder": "open_eye",
+                    "play_for": 200,
+                    "next": {
+                      "type": "display_image",
+                      "id": "CV6;Req82qHJ;oxzGph|",
+                      "filename": "eye_open.raw"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "wait",
+                "id": "WD[*nmE(0yMDkPox0rwl",
+                "time": 50,
+                "next": {
+                  "type": "play_animation",
+                  "id": "K*,(3sVT@T9gfKVIYDd:",
+                  "folder": "open_eye",
+                  "play_for": 200,
+                  "next": {
+                    "type": "display_image",
+                    "id": "CV6;Req82qHJ;oxzGph|",
+                    "filename": "eye_open.raw"
+                  }
+                }
+              },
+              {
+                "type": "play_animation",
+                "id": "K*,(3sVT@T9gfKVIYDd:",
+                "folder": "open_eye",
+                "play_for": 200,
+                "next": {
+                  "type": "display_image",
+                  "id": "CV6;Req82qHJ;oxzGph|",
+                  "filename": "eye_open.raw"
+                }
+              },
+              {
+                "type": "display_image",
+                "id": "CV6;Req82qHJ;oxzGph|",
+                "filename": "eye_open.raw"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "forever",
+      "id": "XAjghIsj3ddyu:u{A6eg",
+      "loop_body": [
+        {
+          "type": "wait",
+          "id": "fd$^KG@/#?*oG2)~`)P6",
+          "time": 5,
+          "next": {
+            "type": "if_gpio",
+            "id": "W2i@)20?DTW(!PX{uevN",
+            "pin": 2,
+            "state": "HIGH",
+            "true_branch": [
+              {
+                "type": "set_color",
+                "id": "/1fG5T(N9MpjTQBU0^sI",
+                "color": "#FF0000",
+                "next": {
+                  "type": "display_image",
+                  "id": "T5Z`PbC63{AXe%x6?FBE",
+                  "filename": "angry.raw"
+                }
+              },
+              {
+                "type": "display_image",
+                "id": "T5Z`PbC63{AXe%x6?FBE",
+                "filename": "angry.raw"
+              }
+            ],
+            "false_branch": [
+              {
+                "type": "set_color",
+                "id": "d2~0G%:%m0vx!MvB?ECj",
+                "color": "#00FFFF",
+                "next": {
+                  "type": "wait",
+                  "id": "$D6Je!-Q}`9e}^knN[U$",
+                  "time": {
+                    "type": "random_range",
+                    "min": 3000,
+                    "max": 10000
+                  },
+                  "next": {
+                    "type": "play_animation",
+                    "id": "a,|^z]UDD^Al5s0c3LS~",
+                    "folder": "close_eye",
+                    "play_for": 200,
+                    "next": {
+                      "type": "wait",
+                      "id": "WD[*nmE(0yMDkPox0rwl",
+                      "time": 50,
+                      "next": {
+                        "type": "play_animation",
+                        "id": "K*,(3sVT@T9gfKVIYDd:",
+                        "folder": "open_eye",
+                        "play_for": 200,
+                        "next": {
+                          "type": "display_image",
+                          "id": "CV6;Req82qHJ;oxzGph|",
+                          "filename": "eye_open.raw"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "wait",
+                "id": "$D6Je!-Q}`9e}^knN[U$",
+                "time": {
+                  "type": "random_range",
+                  "min": 3000,
+                  "max": 10000
+                },
+                "next": {
+                  "type": "play_animation",
+                  "id": "a,|^z]UDD^Al5s0c3LS~",
+                  "folder": "close_eye",
+                  "play_for": 200,
+                  "next": {
+                    "type": "wait",
+                    "id": "WD[*nmE(0yMDkPox0rwl",
+                    "time": 50,
+                    "next": {
+                      "type": "play_animation",
+                      "id": "K*,(3sVT@T9gfKVIYDd:",
+                      "folder": "open_eye",
+                      "play_for": 200,
+                      "next": {
+                        "type": "display_image",
+                        "id": "CV6;Req82qHJ;oxzGph|",
+                        "filename": "eye_open.raw"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "play_animation",
+                "id": "a,|^z]UDD^Al5s0c3LS~",
+                "folder": "close_eye",
+                "play_for": 200,
+                "next": {
+                  "type": "wait",
+                  "id": "WD[*nmE(0yMDkPox0rwl",
+                  "time": 50,
+                  "next": {
+                    "type": "play_animation",
+                    "id": "K*,(3sVT@T9gfKVIYDd:",
+                    "folder": "open_eye",
+                    "play_for": 200,
+                    "next": {
+                      "type": "display_image",
+                      "id": "CV6;Req82qHJ;oxzGph|",
+                      "filename": "eye_open.raw"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "wait",
+                "id": "WD[*nmE(0yMDkPox0rwl",
+                "time": 50,
+                "next": {
+                  "type": "play_animation",
+                  "id": "K*,(3sVT@T9gfKVIYDd:",
+                  "folder": "open_eye",
+                  "play_for": 200,
+                  "next": {
+                    "type": "display_image",
+                    "id": "CV6;Req82qHJ;oxzGph|",
+                    "filename": "eye_open.raw"
+                  }
+                }
+              },
+              {
+                "type": "play_animation",
+                "id": "K*,(3sVT@T9gfKVIYDd:",
+                "folder": "open_eye",
+                "play_for": 200,
+                "next": {
+                  "type": "display_image",
+                  "id": "CV6;Req82qHJ;oxzGph|",
+                  "filename": "eye_open.raw"
+                }
+              },
+              {
+                "type": "display_image",
+                "id": "CV6;Req82qHJ;oxzGph|",
+                "filename": "eye_open.raw"
+              }
+            ]
+          }
+        },
+        {
+          "type": "if_gpio",
+          "id": "W2i@)20?DTW(!PX{uevN",
+          "pin": 2,
+          "state": "HIGH",
+          "true_branch": [
+            {
+              "type": "set_color",
+              "id": "/1fG5T(N9MpjTQBU0^sI",
+              "color": "#FF0000",
+              "next": {
+                "type": "display_image",
+                "id": "T5Z`PbC63{AXe%x6?FBE",
+                "filename": "angry.raw"
+              }
+            },
+            {
+              "type": "display_image",
+              "id": "T5Z`PbC63{AXe%x6?FBE",
+              "filename": "angry.raw"
+            }
+          ],
+          "false_branch": [
+            {
+              "type": "set_color",
+              "id": "d2~0G%:%m0vx!MvB?ECj",
+              "color": "#00FFFF",
+              "next": {
+                "type": "wait",
+                "id": "$D6Je!-Q}`9e}^knN[U$",
+                "time": {
+                  "type": "random_range",
+                  "min": 3000,
+                  "max": 10000
+                },
+                "next": {
+                  "type": "play_animation",
+                  "id": "a,|^z]UDD^Al5s0c3LS~",
+                  "folder": "close_eye",
+                  "play_for": 200,
+                  "next": {
+                    "type": "wait",
+                    "id": "WD[*nmE(0yMDkPox0rwl",
+                    "time": 50,
+                    "next": {
+                      "type": "play_animation",
+                      "id": "K*,(3sVT@T9gfKVIYDd:",
+                      "folder": "open_eye",
+                      "play_for": 200,
+                      "next": {
+                        "type": "display_image",
+                        "id": "CV6;Req82qHJ;oxzGph|",
+                        "filename": "eye_open.raw"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "wait",
+              "id": "$D6Je!-Q}`9e}^knN[U$",
+              "time": {
+                "type": "random_range",
+                "min": 3000,
+                "max": 10000
+              },
+              "next": {
+                "type": "play_animation",
+                "id": "a,|^z]UDD^Al5s0c3LS~",
+                "folder": "close_eye",
+                "play_for": 200,
+                "next": {
+                  "type": "wait",
+                  "id": "WD[*nmE(0yMDkPox0rwl",
+                  "time": 50,
+                  "next": {
+                    "type": "play_animation",
+                    "id": "K*,(3sVT@T9gfKVIYDd:",
+                    "folder": "open_eye",
+                    "play_for": 200,
+                    "next": {
+                      "type": "display_image",
+                      "id": "CV6;Req82qHJ;oxzGph|",
+                      "filename": "eye_open.raw"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "play_animation",
+              "id": "a,|^z]UDD^Al5s0c3LS~",
+              "folder": "close_eye",
+              "play_for": 200,
+              "next": {
+                "type": "wait",
+                "id": "WD[*nmE(0yMDkPox0rwl",
+                "time": 50,
+                "next": {
+                  "type": "play_animation",
+                  "id": "K*,(3sVT@T9gfKVIYDd:",
+                  "folder": "open_eye",
+                  "play_for": 200,
+                  "next": {
+                    "type": "display_image",
+                    "id": "CV6;Req82qHJ;oxzGph|",
+                    "filename": "eye_open.raw"
+                  }
+                }
+              }
+            },
+            {
+              "type": "wait",
+              "id": "WD[*nmE(0yMDkPox0rwl",
+              "time": 50,
+              "next": {
+                "type": "play_animation",
+                "id": "K*,(3sVT@T9gfKVIYDd:",
+                "folder": "open_eye",
+                "play_for": 200,
+                "next": {
+                  "type": "display_image",
+                  "id": "CV6;Req82qHJ;oxzGph|",
+                  "filename": "eye_open.raw"
+                }
+              }
+            },
+            {
+              "type": "play_animation",
+              "id": "K*,(3sVT@T9gfKVIYDd:",
+              "folder": "open_eye",
+              "play_for": 200,
+              "next": {
+                "type": "display_image",
+                "id": "CV6;Req82qHJ;oxzGph|",
+                "filename": "eye_open.raw"
+              }
+            },
+            {
+              "type": "display_image",
+              "id": "CV6;Req82qHJ;oxzGph|",
+              "filename": "eye_open.raw"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

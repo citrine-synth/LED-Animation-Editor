@@ -1,0 +1,371 @@
+/* style.css - Improved styles for LED Animation Editor */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-container {
+  display: flex;
+  height: calc(100vh - 80px);
+}
+
+.header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
+}
+
+.header h1 {
+  color: #333;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+}
+
+#blocklyDiv {
+  flex: 1;
+  border: none;
+  min-width: 300px;
+}
+
+.preview-panel {
+  width: 350px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.preview-header {
+  padding: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.preview-header h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.preview-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.display-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+}
+
+#previewCanvas {
+  border: 2px solid #333;
+  background: #000;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  width: 256px;
+  height: 192px;
+  margin-bottom: 20px;
+}
+
+.display-info {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.gpio-controls {
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.gpio-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 10px;
+}
+
+.gpio-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.gpio-label {
+  font-size: 10px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.gpio-toggle {
+  width: 50px;
+  height: 25px;
+  background: #ccc;
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.gpio-toggle.active {
+  background: #4CAF50;
+}
+
+.gpio-toggle::before {
+  content: '';
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.gpio-toggle.active::before {
+  transform: translateX(25px);
+}
+
+.gpio-state {
+  font-size: 10px;
+  color: #333;
+  margin-top: 4px;
+  font-weight: bold;
+}
+
+/* Button Styles */
+.blocklyButton {
+  background: linear-gradient(145deg, #f0f0f0, #e1e1e1);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.blocklyButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transition: left 0.5s;
+}
+
+.blocklyButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.blocklyButton:hover::before {
+  left: 100%;
+}
+
+.blocklyButton:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.blocklyButton.small {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+/* Primary button variant */
+.blocklyButton.primary {
+  background: linear-gradient(145deg, #4CAF50, #45a049);
+  color: white;
+}
+
+.blocklyButton.primary:hover {
+  background: linear-gradient(145deg, #45a049, #3d8b40);
+}
+
+/* Danger button variant */
+.blocklyButton.danger {
+  background: linear-gradient(145deg, #f44336, #d32f2f);
+  color: white;
+}
+
+.blocklyButton.danger:hover {
+  background: linear-gradient(145deg, #d32f2f, #b71c1c);
+}
+
+/* Secondary button variant */
+.blocklyButton.secondary {
+  background: linear-gradient(145deg, #2196F3, #1976D2);
+  color: white;
+}
+
+.blocklyButton.secondary:hover {
+  background: linear-gradient(145deg, #1976D2, #1565C0);
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+  }
+  
+  .header h1 {
+    font-size: 20px;
+  }
+  
+  .controls {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .main-container {
+    height: calc(100vh - 120px);
+    flex-direction: column;
+  }
+
+  .preview-panel {
+    width: 100%;
+    height: 250px;
+    border-left: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  #previewCanvas {
+    width: 128px;
+    height: 96px;
+  }
+
+  .gpio-grid {
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+  }
+  
+  .blocklyButton {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Custom Blockly theme adjustments */
+.blocklyMainBackground {
+  stroke: none !important;
+}
+
+.blocklyTreeRow {
+  border-radius: 4px;
+}
+
+.blocklyTreeSelected {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+
+.preview-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  margin: 10px 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.status-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Segoe UI', monospace;
+}
+
+.status-text span:first-child {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+.status-text span:last-child {
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  color: #666;
+  margin-top: 2px;
+}

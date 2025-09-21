@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LED Animation Editor</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://unpkg.com/@blockly/field-colour"></script>
+</head>
+<body>
+  <div class="header">
+    <h1>LED Animation Editor</h1>
+    <div class="controls">
+      <button id="exportBtn" class="blocklyButton primary">Export JSON</button>
+      <label for="loadJsonInput" class="blocklyButton">Load JSON</label>
+      <input type="file" id="loadJsonInput" accept=".json" style="display: none;">
+      <button id="clearBtn" class="blocklyButton danger">Clear Workspace</button>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div id="blocklyDiv"></div>
+    
+    <div class="preview-panel">
+      <div class="preview-header">
+        <h3>32x24 LED Display Preview</h3>
+        <div class="preview-controls">
+          <label for="loadSingleRawBtn" class="blocklyButton secondary small" title="Load a single .raw file that will be added as an image">Load Single .raw</label>
+          <input type="file" id="loadSingleRawBtn" multiple accept=".raw,.bmp" style="display: none;">
+          <label for="loadRawFolderBtn" class="blocklyButton secondary small" title="Load a folder of .raw files and animations that will be used as the final files for the display. animations are just a bunch of .raw files in a sub folder">Load .raw Folder</label>
+          <input type="file" id="loadRawFolderBtn" webkitdirectory directory multiple style="display: none;">
+          <label for="loadPngBtn" class="blocklyButton secondary small" title="Load a folder of png files that are not from PIXILART to get converted to .raw files">Load PNGs</label>
+          <input type="file" id="loadPngBtn" webkitdirectory directory multiple accept="image/png" style="display: none;">
+          <label for="loadZipBtn" class="blocklyButton primary small" title="Load a ZIP file containing PNG frames from PIXILART to get converted to .raw files">Load ZIP</label>
+          <input type="file" id="loadZipBtn" accept=".zip" style="display: none;">
+          <button id="runPreviewBtn" class="blocklyButton primary small">Run Preview</button>
+          <button id="stopPreviewBtn" class="blocklyButton danger small">Stop</button>
+        </div>
+      </div>
+      
+      <div class="display-container">
+        <canvas id="previewCanvas" width="32" height="24"></canvas>
+        <div class="display-info">32x24 pixels (256x192 scaled)</div>
+        
+        <div class="gpio-controls">
+          <h4 style="margin: 0 0 10px 0; color: #333; font-size: 14px;">GPIO Controls</h4>
+          <div class="gpio-grid" id="gpioGrid">
+            <!-- GPIO toggles will be generated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blockly Toolbox -->
+  <xml id="toolbox" style="display: none">
+    <category name="Animation" colour="160">
+      <block type="display_image">
+        <field name="FILENAME">image.bmp</field>
+      </block>
+      <block type="play_animation">
+        <field name="FOLDER">some_anim</field>
+        <field name="PLAY_FOR">2000</field>
+      </block>
+    </category>
+    
+    <category name="Control" colour="120">
+      <block type="wait">
+        <value name="TIME">
+          <block type="number">
+            <field name="NUMBER">1000</field>
+          </block>
+        </value>
+      </block>
+      <block type="random_range">
+        <field name="MIN">500</field>
+        <field name="MAX">2000</field>
+      </block>
+      <block type="number">
+        <field name="NUMBER">1000</field>
+      </block>
+    </category>
+    
+    <category name="GPIO" colour="230">
+      <block type="gpio">
+        <field name="PIN">13</field>
+        <field name="STATE">HIGH</field>
+      </block>
+      <block type="if_gpio">
+        <field name="PIN">2</field>
+        <field name="STATE">HIGH</field>
+      </block>
+      <block type="gpio_trigger">
+        <field name="PIN">2</field>
+        <field name="TRIGGER">RISING</field>
+      </block>
+    </category>
+    
+    <category name="Flow" colour="65">
+      <block type="start"></block>
+      <block type="compare"></block>
+      <block type="if"></block>
+      <block type="forever"></block>
+      <block type="repeat">
+        <value name="TIMES">
+          <block type="number">
+            <field name="NUMBER">10</field>
+          </block>
+        </value>
+      </block>
+      <block type="while"></block>
+      <block type="break"></block>
+    </category>
+    
+    <category name="Color" colour="20">
+      <block type="set_color">
+        <value name="COLOR">
+          <block type="color_value">
+            <field name="COLOR">#FF0000</field>
+          </block>
+        </value>
+      </block>
+      <block type="color_value">
+        <field name="COLOR">#FF0000</field>
+      </block>
+      <block type="custom_color">
+        <field name="COLOR">#FF0000</field>
+      </block>
+      <block type="rgb_color">
+        <field name="RED">255</field>
+        <field name="GREEN">0</field>
+        <field name="BLUE">0</field>
+      </block>
+    </category>
+    <category name="Variables" colour="330">
+      <block type="set_variable"></block>
+      <block type="get_variable"></block>
+    </category>
+  </xml>
+
+  <!-- Load the block definitions and generator -->
+  <script src="blocks.js"></script>
+  <script src="generator.js"></script>
+  <script src="loader.js"></script>
+  <script src="preview.js"></script>
+  
+  <script>
+    // Initialize Blockly workspace
+    const workspace = Blockly.inject('blocklyDiv', {
+      toolbox: document.getElementById('toolbox'),
+      grid: {
+        spacing: 25,
+        length: 3,
+        colour: '#ccc',
+        snap: true
+      },
+      zoom: {
+        controls: true,
+        wheel: true,
+        startScale: 1.0,
+        maxScale: 3,
+        minScale: 0.3,
+        scaleSpeed: 1.2
+      },
+      trashcan: true,
+      sounds: false,
+      oneBasedIndex: false
+    });
+
+    // Add a default start block if none exists
+    function addStartBlockIfNeeded() {
+      const startBlocks = workspace.getBlocksByType('start');
+      if (startBlocks.length === 0) {
+        const startBlock = workspace.newBlock('start');
+        startBlock.initSvg();
+        startBlock.render();
+        startBlock.moveBy(50, 50);
+      }
+    }
+
+    // Initialize with a start block
+    addStartBlockIfNeeded();
+
+    // Export JSON functionality
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      try {
+        const json = generateJson(workspace);
+        
+        if (json.includes('"error"')) {
+          alert('Error generating JSON: ' + json);
+          return;
+        }
+
+        // Create download
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'animation_sequence.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        console.log('Generated JSON:', json);
+        alert('JSON exported successfully!');
+      } catch (error) {
+        console.error('Export error:', error);
+        alert('Error exporting JSON: ' + error.message);
+      }
+    });
+
+    // Load JSON functionality
+    document.getElementById('loadJsonInput').addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const jsonString = e.target.result;
+            const success = loadJson(workspace, jsonString);
+            if (success) {
+              alert('JSON loaded successfully!');
+            } else {
+              alert('Failed to load JSON. Please check the file format.');
+            }
+          } catch (error) {
+            console.error('Load error:', error);
+            alert('Error loading JSON: ' + error.message);
+          }
+        };
+        reader.readAsText(file);
+      }
+      // Reset the file input to allow reloading the same file
+      event.target.value = '';
+    });
+
+    // Clear workspace
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear the workspace? This cannot be undone.')) {
+        workspace.clear();
+        addStartBlockIfNeeded();
+      }
+    });
+
+    // Auto-save to localStorage (if available)
+    function autoSave() {
+      try {
+        const xml = Blockly.Xml.workspaceToDom(workspace);
+        const xmlText = Blockly.Xml.domToText(xml);
+        localStorage.setItem('blockly_workspace', xmlText);
+      } catch (e) {
+        console.warn('Could not auto-save workspace');
+      }
+    }
+
+    // Auto-load from localStorage (if available)
+    function autoLoad() {
+      try {
+        const xmlText = localStorage.getItem('blockly_workspace');
+        if (xmlText) {
+          const xml = Blockly.Xml.textToDom(xmlText);
+          Blockly.Xml.domToWorkspace(xml, workspace);
+        }
+      } catch (e) {
+        console.warn('Could not auto-load workspace');
+        addStartBlockIfNeeded();
+      }
+    }
+
+    // Set up auto-save on changes
+    workspace.addChangeListener(() => {
+      setTimeout(autoSave, 100); // Debounce saves
+    });
+
+    // Load saved workspace on startup
+    autoLoad();
+  </script>
+</body>
+</html>

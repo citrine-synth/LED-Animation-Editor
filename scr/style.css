@@ -1,4 +1,4 @@
-/* style.css - Improved styles for LED Animation Editor */
+
 
 * {
   margin: 0;
@@ -168,7 +168,7 @@ body {
   font-weight: bold;
 }
 
-/* Button Styles */
+
 .blocklyButton {
   background: linear-gradient(145deg, #f0f0f0, #e1e1e1);
   border: none;
@@ -215,7 +215,7 @@ body {
   font-size: 12px;
 }
 
-/* Primary button variant */
+
 .blocklyButton.primary {
   background: linear-gradient(145deg, #4CAF50, #45a049);
   color: white;
@@ -225,7 +225,7 @@ body {
   background: linear-gradient(145deg, #45a049, #3d8b40);
 }
 
-/* Danger button variant */
+
 .blocklyButton.danger {
   background: linear-gradient(145deg, #f44336, #d32f2f);
   color: white;
@@ -235,7 +235,6 @@ body {
   background: linear-gradient(145deg, #d32f2f, #b71c1c);
 }
 
-/* Secondary button variant */
 .blocklyButton.secondary {
   background: linear-gradient(145deg, #2196F3, #1976D2);
   color: white;
@@ -245,7 +244,7 @@ body {
   background: linear-gradient(145deg, #1976D2, #1565C0);
 }
 
-/* Custom scrollbar for webkit browsers */
+
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -264,7 +263,7 @@ body {
   background: rgba(0, 0, 0, 0.5);
 }
 
-/* Responsive design */
+
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
@@ -309,7 +308,7 @@ body {
   }
 }
 
-/* Animations */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -325,7 +324,7 @@ body {
   animation: fadeIn 0.6s ease-out;
 }
 
-/* Custom Blockly theme adjustments */
+
 .blocklyMainBackground {
   stroke: none !important;
 }

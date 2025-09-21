@@ -1,0 +1,17 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.yourname.display-editor
+productName: LED Display Editor
+files:
+  - filter:
+      - '**/*'
+      - '!node_modules/**/*'
+      - node_modules/electron/**/*
+win:
+  target: portable
+  icon: assets/icon.ico
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+electronVersion: 38.1.2

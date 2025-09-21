@@ -14,10 +14,10 @@ This editor lets you create LED display animations using blocks. You can:
 
 ## Getting started
 
-Download the code as a zip file, unzip it then open the "LED Display Editor.exe" shortcut.
-Hit the "Load JSON" button and open the "example_blink.json" file.
-Click on "Load.raw folder", select the "raw_test_images" folder and hit upload.
-That's it, you can start the preview or change the blocks.
+- Download the code as a zip file, unzip it then open the "LED Display Editor.exe" shortcut.
+- Hit the "Load JSON" button and open the "example_blink.json" file.
+- Click on "Load.raw folder", select the "raw_test_images" folder and hit upload.
+- That's it, you can start the preview or change the blocks.
 
 ### Loading images
 
@@ -34,4 +34,13 @@ All images are converted to 32x24 pixels in 1-bit monochrome format.
 
 ### Creating programs
 
-Drag blocks from the toolbox to create your animation sequence. The program always starts with a "Start Program" block. Common patterns:
+Drag blocks from the toolbox to create your animation sequence. The program always starts with a "Start Program" block.
+
+### TODO:
+
+- fix loop issues where if you don't have a wait in a loop the program crashes
+- add support for interrupt gpio triggers so that it doesnt wait when you change a gpio
+- add a tool to reverse animations (just re name the files in reverse order)
+- add usb upload support for the display
+- fix electron focus issue where after loading a folder you need to switch to another window and back to be able to edit text fields
+

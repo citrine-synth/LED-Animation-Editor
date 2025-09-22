@@ -1,9 +1,6 @@
-// generator.js - Optimized to prevent exponential JSON growth
 
-// Initialize JavaScript generator
 Blockly.JavaScript = new Blockly.Generator('JavaScript');
 
-// Helper function to generate JSON for a single block (without processing next blocks)
 function blockToJson(block, processNext = true) {
   if (!block) return null;
 
@@ -12,7 +9,6 @@ function blockToJson(block, processNext = true) {
     id: block.id
   };
 
-  // Handle block-specific fields
   switch (block.type) {
     case 'display_image':
       blockJson.filename = block.getFieldValue('FILENAME');
@@ -79,7 +75,7 @@ function blockToJson(block, processNext = true) {
       break;
 
     case 'break':
-      // No additional fields needed
+
       break;
 
     case 'gpio':
@@ -124,7 +120,6 @@ function blockToJson(block, processNext = true) {
       break;
   }
 
-  // Only process next block if explicitly requested (and only for linear chains)
   if (processNext) {
     const nextBlock = block.getNextBlock();
     if (nextBlock) {
@@ -135,26 +130,22 @@ function blockToJson(block, processNext = true) {
   return blockJson;
 }
 
-// Optimized function to generate JSON for statement inputs
 function generateStatementJson(startBlock) {
   if (!startBlock) return null;
   
   const statements = [];
   let currentBlock = startBlock;
-  
-  // Process the linear chain of blocks
+
   while (currentBlock) {
-    // Generate JSON for current block WITHOUT processing its next block
+
     const blockJson = blockToJson(currentBlock, false);
     if (blockJson) {
       statements.push(blockJson);
     }
-    
-    // Manually move to next block to avoid duplicate processing
+
     currentBlock = currentBlock.getNextBlock();
   }
-  
-  // Now connect the statements with proper next references
+
   for (let i = 0; i < statements.length - 1; i++) {
     statements[i].next = statements[i + 1];
   }
@@ -162,7 +153,6 @@ function generateStatementJson(startBlock) {
   return statements.length > 0 ? statements[0] : null;
 }
 
-// Helper function to generate JSON for value inputs (unchanged - these don't create chains)
 function generateValueJson(block) {
   if (!block) return null;
 
@@ -203,7 +193,6 @@ function generateValueJson(block) {
   }
 }
 
-// Main function to generate JSON from workspace
 function generateJson(workspace) {
   const topBlocks = workspace.getTopBlocks(true);
   const startBlock = topBlocks.find(block => block.type === 'start');
@@ -226,5 +215,4 @@ function generateJson(workspace) {
   return jsonString;
 }
 
-// Export function for use in index.html
 window.generateJson = generateJson;

@@ -16,6 +16,7 @@
       <label for="loadJsonInput" class="blocklyButton">Load JSON</label>
       <input type="file" id="loadJsonInput" accept=".json" style="display: none;">
       <button id="clearBtn" class="blocklyButton danger">Clear Workspace</button>
+      <button id="licenseBtn" class="blocklyButton secondary">License</button>
     </div>
   </div>
 
@@ -48,6 +49,26 @@
           <div class="gpio-grid" id="gpioGrid">
             <!-- GPIO toggles will be generated here -->
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- License Modal -->
+  <div id="licenseModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>License Information</h2>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <h3>LED Animation Editor</h3>
+        <p><strong>Copyright (C) 2025 Citrine</strong></p>
+        <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+        <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
+        <div class="license-actions">
+          <button id="viewFullLicenseBtn" class="blocklyButton primary">View Full License</button>
+          <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" class="blocklyButton secondary">GPL v3 Online</a>
         </div>
       </div>
     </div>
@@ -244,6 +265,32 @@
       }
     });
 
+    // License modal functionality
+    const licenseModal = document.getElementById('licenseModal');
+    const licenseBtn = document.getElementById('licenseBtn');
+    const closeBtn = document.querySelector('.close');
+    const viewFullLicenseBtn = document.getElementById('viewFullLicenseBtn');
+
+    licenseBtn.addEventListener('click', () => {
+      licenseModal.style.display = 'block';
+    });
+
+    closeBtn.addEventListener('click', () => {
+      licenseModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === licenseModal) {
+        licenseModal.style.display = 'none';
+      }
+    });
+
+    viewFullLicenseBtn.addEventListener('click', () => {
+      // In Electron, you could open the local LICENSE file
+      // For now, this opens the license in a new window/tab
+      window.open('LICENSE', '_blank');
+    });
+
     // Auto-save to localStorage (if available)
     function autoSave() {
       try {
@@ -277,5 +324,93 @@
     // Load saved workspace on startup
     autoLoad();
   </script>
+
+  <style>
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 0;
+      border: 1px solid #888;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 600px;
+      max-height: 70vh;
+      overflow: auto;
+    }
+
+    .modal-header {
+      background-color: #f1f1f1;
+      padding: 15px 20px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: #333;
+    }
+
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+    }
+
+    .modal-body {
+      padding: 20px;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .modal-body h3 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+
+    .license-actions {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .license-actions a {
+      text-decoration: none;
+    }
+
+    /* Responsive modal */
+    @media (max-width: 768px) {
+      .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        max-height: 80vh;
+      }
+      
+      .license-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
 </body>
 </html>

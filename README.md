@@ -19,7 +19,7 @@ This editor lets you create LED display animations using blocks. You can:
 
 ## Getting started
 
-- Download the code as a zip file, unzip it then open the "LED Display Editor.exe" shortcut.
+- Download the code as a zip file, unzip it then open the "start.bat" shortcut.
 - Hit the "Load JSON" button and open the "example_blink.json" file.
 - Click on "Load.raw folder", select the "raw_test_images" folder and hit upload.
 - That's it, you can start the preview or change the blocks.

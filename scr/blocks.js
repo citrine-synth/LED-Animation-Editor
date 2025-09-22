@@ -1,7 +1,5 @@
-// blocks.js - Updated Blockly block definitions for LED animation editor with if statements and variables
 
-// ANIMATION BLOCKS
-// Display single image
+
 Blockly.Blocks['display_image'] = {
   init: function() {
     this.appendDummyInput()
@@ -15,7 +13,6 @@ Blockly.Blocks['display_image'] = {
   }
 };
 
-// Play animation folder
 Blockly.Blocks['play_animation'] = {
   init: function() {
     this.appendDummyInput()
@@ -32,8 +29,6 @@ Blockly.Blocks['play_animation'] = {
   }
 };
 
-// CONTROL BLOCKS
-// Wait block
 Blockly.Blocks['wait'] = {
   init: function() {
     this.appendValueInput("TIME")
@@ -49,7 +44,6 @@ Blockly.Blocks['wait'] = {
   }
 };
 
-// Random range number generator
 Blockly.Blocks['random_range'] = {
   init: function() {
     this.appendDummyInput()
@@ -64,7 +58,6 @@ Blockly.Blocks['random_range'] = {
   }
 };
 
-// Number input block
 Blockly.Blocks['number'] = {
   init: function() {
     this.appendDummyInput()
@@ -77,7 +70,6 @@ Blockly.Blocks['number'] = {
   }
 };
 
-// If statement block
 Blockly.Blocks['if'] = {
   init: function() {
     this.appendValueInput("CONDITION")
@@ -97,7 +89,6 @@ Blockly.Blocks['if'] = {
   }
 };
 
-// Comparison block for conditions
 Blockly.Blocks['compare'] = {
   init: function() {
     this.appendValueInput("LEFT")
@@ -120,7 +111,6 @@ Blockly.Blocks['compare'] = {
   }
 };
 
-// Variable set block
 Blockly.Blocks['set_variable'] = {
   init: function() {
     this.appendDummyInput()
@@ -137,7 +127,6 @@ Blockly.Blocks['set_variable'] = {
   }
 };
 
-// Variable get block
 Blockly.Blocks['get_variable'] = {
   init: function() {
     this.appendDummyInput()
@@ -150,8 +139,6 @@ Blockly.Blocks['get_variable'] = {
   }
 };
 
-// GPIO BLOCKS
-// Set GPIO pin state
 Blockly.Blocks['gpio'] = {
   init: function() {
     this.appendDummyInput()
@@ -170,7 +157,6 @@ Blockly.Blocks['gpio'] = {
   }
 };
 
-// GPIO conditional
 Blockly.Blocks['if_gpio'] = {
   init: function() {
     this.appendDummyInput()
@@ -195,7 +181,6 @@ Blockly.Blocks['if_gpio'] = {
   }
 };
 
-// GPIO trigger (interrupt-style)
 Blockly.Blocks['gpio_trigger'] = {
   init: function() {
     this.appendDummyInput()
@@ -220,8 +205,6 @@ Blockly.Blocks['gpio_trigger'] = {
   }
 };
 
-// FLOW CONTROL
-// Start block - entry point
 Blockly.Blocks['start'] = {
   init: function() {
     this.appendDummyInput()
@@ -237,7 +220,6 @@ Blockly.Blocks['start'] = {
   }
 };
 
-// Forever loop block
 Blockly.Blocks['forever'] = {
   init: function() {
     this.appendDummyInput()
@@ -253,7 +235,6 @@ Blockly.Blocks['forever'] = {
   }
 };
 
-// Repeat N times loop
 Blockly.Blocks['repeat'] = {
   init: function() {
     this.appendValueInput("TIMES")
@@ -272,7 +253,6 @@ Blockly.Blocks['repeat'] = {
   }
 };
 
-// While loop
 Blockly.Blocks['while'] = {
   init: function() {
     this.appendValueInput("CONDITION")
@@ -289,7 +269,6 @@ Blockly.Blocks['while'] = {
   }
 };
 
-// Break out of loop
 Blockly.Blocks['break'] = {
   init: function() {
     this.appendDummyInput()
@@ -301,8 +280,6 @@ Blockly.Blocks['break'] = {
   }
 };
 
-// COLOR BLOCKS
-// Set color for subsequent operations
 Blockly.Blocks['set_color'] = {
   init: function() {
     this.appendValueInput("COLOR")
@@ -316,7 +293,6 @@ Blockly.Blocks['set_color'] = {
   }
 };
 
-// Predefined color values
 Blockly.Blocks['color_value'] = {
   init: function() {
     this.appendDummyInput()
@@ -343,7 +319,6 @@ Blockly.Blocks['color_value'] = {
   }
 };
 
-// Custom hex color input
 Blockly.Blocks['custom_color'] = {
   init: function() {
     this.appendDummyInput()
@@ -356,7 +331,6 @@ Blockly.Blocks['custom_color'] = {
   }
 };
 
-// RGB color builder
 Blockly.Blocks['rgb_color'] = {
   init: function() {
     this.appendDummyInput()

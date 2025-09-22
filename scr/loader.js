@@ -1,4 +1,4 @@
-// loader.js - Fixed version that prevents duplicate blocks and gesture issues
+// loader.js - Fixed version with better error handling and positioning
 
 // Helper function to create a block from JSON without rendering
 function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
@@ -69,29 +69,45 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
           }
         }
         if (json.true_branch) {
-          createStatementBlocksFromJson(workspace, json.true_branch, block.getInput('TRUE').connection, processedBlocks);
+          const trueBlock = createBlockFromJson(workspace, json.true_branch, processedBlocks);
+          if (trueBlock && block.getInput('TRUE') && trueBlock.previousConnection) {
+            block.getInput('TRUE').connection.connect(trueBlock.previousConnection);
+          }
         }
         if (json.false_branch) {
-          createStatementBlocksFromJson(workspace, json.false_branch, block.getInput('FALSE').connection, processedBlocks);
+          const falseBlock = createBlockFromJson(workspace, json.false_branch, processedBlocks);
+          if (falseBlock && block.getInput('FALSE') && falseBlock.previousConnection) {
+            block.getInput('FALSE').connection.connect(falseBlock.previousConnection);
+          }
         }
         break;
 
       case 'compare':
-        if (json.left) {
-          const leftBlock = createValueBlockFromJson(workspace, json.left, processedBlocks);
-          if (leftBlock) {
-            block.getInput('LEFT').connection.connect(leftBlock.outputConnection);
+        // Handle LEFT input - support both numbers and objects
+        if (json.left !== undefined) {
+          if (typeof json.left === 'number') {
+            const numberBlock = workspace.newBlock('number');
+            numberBlock.setFieldValue(json.left, 'NUMBER');
+            numberBlock.initSvg();
+            block.getInput('LEFT').connection.connect(numberBlock.outputConnection);
+          } else if (json.left && typeof json.left === 'object') {
+            const leftBlock = createValueBlockFromJson(workspace, json.left, processedBlocks);
+            if (leftBlock) {
+              block.getInput('LEFT').connection.connect(leftBlock.outputConnection);
+            }
           }
         }
+        
         block.setFieldValue(json.operator || 'EQ', 'OPERATOR');
+        
+        // Handle RIGHT input - support both numbers and objects
         if (json.right !== undefined) {
-          // Handle both number values and block objects
           if (typeof json.right === 'number') {
             const numberBlock = workspace.newBlock('number');
             numberBlock.setFieldValue(json.right, 'NUMBER');
             numberBlock.initSvg();
             block.getInput('RIGHT').connection.connect(numberBlock.outputConnection);
-          } else {
+          } else if (json.right && typeof json.right === 'object') {
             const rightBlock = createValueBlockFromJson(workspace, json.right, processedBlocks);
             if (rightBlock) {
               block.getInput('RIGHT').connection.connect(rightBlock.outputConnection);
@@ -103,7 +119,6 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
       case 'set_variable':
         block.setFieldValue(json.var_name || 'myVar', 'VAR_NAME');
         if (json.value !== undefined) {
-          // Handle direct values (numbers, strings) vs block objects
           if (typeof json.value === 'number') {
             const numberBlock = workspace.newBlock('number');
             numberBlock.setFieldValue(json.value, 'NUMBER');
@@ -129,7 +144,10 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
 
       case 'forever':
         if (json.loop_body) {
-          createStatementBlocksFromJson(workspace, json.loop_body, block.getInput('DO').connection, processedBlocks);
+          const loopBlock = createBlockFromJson(workspace, json.loop_body, processedBlocks);
+          if (loopBlock && block.getInput('DO') && loopBlock.previousConnection) {
+            block.getInput('DO').connection.connect(loopBlock.previousConnection);
+          }
         }
         break;
 
@@ -146,7 +164,10 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
           }
         }
         if (json.loop_body) {
-          createStatementBlocksFromJson(workspace, json.loop_body, block.getInput('DO').connection, processedBlocks);
+          const loopBlock = createBlockFromJson(workspace, json.loop_body, processedBlocks);
+          if (loopBlock && block.getInput('DO') && loopBlock.previousConnection) {
+            block.getInput('DO').connection.connect(loopBlock.previousConnection);
+          }
         }
         break;
 
@@ -158,7 +179,10 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
           }
         }
         if (json.loop_body) {
-          createStatementBlocksFromJson(workspace, json.loop_body, block.getInput('DO').connection, processedBlocks);
+          const loopBlock = createBlockFromJson(workspace, json.loop_body, processedBlocks);
+          if (loopBlock && block.getInput('DO') && loopBlock.previousConnection) {
+            block.getInput('DO').connection.connect(loopBlock.previousConnection);
+          }
         }
         break;
 
@@ -175,10 +199,16 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
         block.setFieldValue(json.pin || 0, 'PIN');
         block.setFieldValue(json.state || 'HIGH', 'STATE');
         if (json.true_branch) {
-          createStatementBlocksFromJson(workspace, json.true_branch, block.getInput('TRUE').connection, processedBlocks);
+          const trueBlock = createBlockFromJson(workspace, json.true_branch, processedBlocks);
+          if (trueBlock && block.getInput('TRUE') && trueBlock.previousConnection) {
+            block.getInput('TRUE').connection.connect(trueBlock.previousConnection);
+          }
         }
         if (json.false_branch) {
-          createStatementBlocksFromJson(workspace, json.false_branch, block.getInput('FALSE').connection, processedBlocks);
+          const falseBlock = createBlockFromJson(workspace, json.false_branch, processedBlocks);
+          if (falseBlock && block.getInput('FALSE') && falseBlock.previousConnection) {
+            block.getInput('FALSE').connection.connect(falseBlock.previousConnection);
+          }
         }
         break;
 
@@ -186,13 +216,19 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
         block.setFieldValue(json.pin || 0, 'PIN');
         block.setFieldValue(json.trigger || 'RISING', 'TRIGGER');
         if (json.actions) {
-          createStatementBlocksFromJson(workspace, json.actions, block.getInput('DO').connection, processedBlocks);
+          const actionBlock = createBlockFromJson(workspace, json.actions, processedBlocks);
+          if (actionBlock && block.getInput('DO') && actionBlock.previousConnection) {
+            block.getInput('DO').connection.connect(actionBlock.previousConnection);
+          }
         }
         break;
 
       case 'start':
         if (json.actions) {
-          createStatementBlocksFromJson(workspace, json.actions, block.getInput('DO').connection, processedBlocks);
+          const actionBlock = createBlockFromJson(workspace, json.actions, processedBlocks);
+          if (actionBlock && block.getInput('DO') && actionBlock.previousConnection) {
+            block.getInput('DO').connection.connect(actionBlock.previousConnection);
+          }
         }
         break;
 
@@ -315,20 +351,30 @@ function createValueBlockFromJson(workspace, json, processedBlocks = new Set()) 
       case 'compare':
         block = workspace.newBlock('compare');
         block.setFieldValue(json.operator || 'EQ', 'OPERATOR');
-        if (json.left) {
-          const leftBlock = createValueBlockFromJson(workspace, json.left, processedBlocks);
-          if (leftBlock) {
-            block.getInput('LEFT').connection.connect(leftBlock.outputConnection);
+        
+        // Handle LEFT input - support both numbers and objects
+        if (json.left !== undefined) {
+          if (typeof json.left === 'number') {
+            const numberBlock = workspace.newBlock('number');
+            numberBlock.setFieldValue(json.left, 'NUMBER');
+            numberBlock.initSvg();
+            block.getInput('LEFT').connection.connect(numberBlock.outputConnection);
+          } else if (json.left && typeof json.left === 'object') {
+            const leftBlock = createValueBlockFromJson(workspace, json.left, processedBlocks);
+            if (leftBlock) {
+              block.getInput('LEFT').connection.connect(leftBlock.outputConnection);
+            }
           }
         }
+        
+        // Handle RIGHT input - support both numbers and objects
         if (json.right !== undefined) {
-          // Handle both number values and block objects
           if (typeof json.right === 'number') {
             const numberBlock = workspace.newBlock('number');
             numberBlock.setFieldValue(json.right, 'NUMBER');
             numberBlock.initSvg();
             block.getInput('RIGHT').connection.connect(numberBlock.outputConnection);
-          } else {
+          } else if (json.right && typeof json.right === 'object') {
             const rightBlock = createValueBlockFromJson(workspace, json.right, processedBlocks);
             if (rightBlock) {
               block.getInput('RIGHT').connection.connect(rightBlock.outputConnection);
@@ -358,29 +404,6 @@ function createValueBlockFromJson(workspace, json, processedBlocks = new Set()) 
   }
 
   return block;
-}
-
-// Helper function to create statement blocks
-function createStatementBlocksFromJson(workspace, statements, parentConnection, processedBlocks = new Set()) {
-  if (!statements || !Array.isArray(statements)) {
-    console.warn('Invalid statements array:', statements);
-    return;
-  }
-
-  // Process only the first block in the statements array
-  // The rest should be connected via the 'next' property chain
-  const firstStatement = statements[0];
-  if (firstStatement) {
-    const firstBlock = createBlockFromJson(workspace, firstStatement, processedBlocks);
-    if (firstBlock && parentConnection && firstBlock.previousConnection) {
-      try {
-        parentConnection.connect(firstBlock.previousConnection);
-        console.debug(`Connected first statement block ${firstBlock.id}`);
-      } catch (e) {
-        console.warn(`Failed to connect first statement block:`, e);
-      }
-    }
-  }
 }
 
 // Function to properly reset workspace state and clear gestures
@@ -444,42 +467,73 @@ function loadJson(workspace, jsonString) {
     const processedBlocks = new Set();
 
     // Create the block structure from JSON
+    console.debug('Creating blocks from JSON...');
     const startBlock = createBlockFromJson(workspace, json, processedBlocks);
     if (!startBlock) {
       console.error('Failed to create start block');
       return false;
     }
 
-    // Position the start block
-    startBlock.moveBy(50, 50);
+    console.debug(`Created start block: ${startBlock.id}`);
 
-    // Render all blocks in the workspace
+    // Position the start block at a visible location
+    startBlock.moveBy(50, 50);
+    console.debug('Positioned start block');
+
+    // Get all blocks and log them
     const allBlocks = workspace.getAllBlocks(false);
-    console.debug(`Rendering ${allBlocks.length} blocks`);
+    console.debug(`Total blocks created: ${allBlocks.length}`);
     
-    allBlocks.forEach(block => {
+    // Log each block for debugging
+    allBlocks.forEach((block, index) => {
+      console.debug(`Block ${index}: ${block.type} (${block.id})`);
+    });
+
+    // Render all blocks in the workspace with better error handling
+    console.debug('Rendering all blocks...');
+    allBlocks.forEach((block, index) => {
       try {
         block.render();
+        console.debug(`Rendered block ${index}: ${block.type}`);
       } catch (e) {
-        console.warn(`Failed to render block ${block.id}:`, e);
+        console.error(`Failed to render block ${block.id} (${block.type}):`, e);
       }
     });
+
+    // Force workspace to center on content
+    setTimeout(() => {
+      try {
+        workspace.scrollCenter();
+        console.debug('Centered workspace on content');
+      } catch (e) {
+        console.warn('Failed to center workspace:', e);
+      }
+    }, 300);
 
     console.debug('JSON loaded successfully');
     return true;
     
   } catch (e) {
     console.error('Error loading JSON:', e);
+    console.error('JSON that failed to load:', jsonString);
     return false;
   } finally {
-    // Re-enable events after a short delay to ensure everything is settled
+    // Re-enable events after a longer delay to ensure everything is settled
     setTimeout(() => {
       Blockly.Events.enable();
       console.debug('Re-enabled Blockly events');
       
       // Final reset of workspace state
       resetWorkspaceState(workspace);
-    }, 200);
+      
+      // Final check - log visible blocks
+      const visibleBlocks = workspace.getTopBlocks(true);
+      console.debug(`Visible top-level blocks: ${visibleBlocks.length}`);
+      visibleBlocks.forEach(block => {
+        console.debug(`Visible block: ${block.type} at (${block.getRelativeToSurfaceXY().x}, ${block.getRelativeToSurfaceXY().y})`);
+      });
+      
+    }, 500);
   }
 }
 

@@ -1,10 +1,10 @@
-// generator.js - Updated to handle if statements and variables for LED animation editor
+// generator.js - Optimized to prevent exponential JSON growth
 
 // Initialize JavaScript generator
 Blockly.JavaScript = new Blockly.Generator('JavaScript');
 
-// Helper function to generate JSON for a block
-function blockToJson(block) {
+// Helper function to generate JSON for a single block (without processing next blocks)
+function blockToJson(block, processNext = true) {
   if (!block) return null;
 
   const blockJson = {
@@ -13,7 +13,6 @@ function blockToJson(block) {
   };
 
   // Handle block-specific fields
-    // Handle block-specific fields
   switch (block.type) {
     case 'display_image':
       blockJson.filename = block.getFieldValue('FILENAME');
@@ -125,27 +124,45 @@ function blockToJson(block) {
       break;
   }
 
-  // Handle next block in the chain
-  const nextBlock = block.getNextBlock();
-  if (nextBlock) {
-    blockJson.next = blockToJson(nextBlock);
+  // Only process next block if explicitly requested (and only for linear chains)
+  if (processNext) {
+    const nextBlock = block.getNextBlock();
+    if (nextBlock) {
+      blockJson.next = blockToJson(nextBlock, true);
+    }
   }
 
   return blockJson;
 }
 
-// Helper function to generate JSON for statement inputs (e.g., DO, TRUE, FALSE)
+// Optimized function to generate JSON for statement inputs
 function generateStatementJson(startBlock) {
+  if (!startBlock) return null;
+  
   const statements = [];
   let currentBlock = startBlock;
+  
+  // Process the linear chain of blocks
   while (currentBlock) {
-    statements.push(blockToJson(currentBlock));
+    // Generate JSON for current block WITHOUT processing its next block
+    const blockJson = blockToJson(currentBlock, false);
+    if (blockJson) {
+      statements.push(blockJson);
+    }
+    
+    // Manually move to next block to avoid duplicate processing
     currentBlock = currentBlock.getNextBlock();
   }
-  return statements.length > 0 ? statements : null;
+  
+  // Now connect the statements with proper next references
+  for (let i = 0; i < statements.length - 1; i++) {
+    statements[i].next = statements[i + 1];
+  }
+  
+  return statements.length > 0 ? statements[0] : null;
 }
 
-// Helper function to generate JSON for value inputs (e.g., TIME, COLOR, CONDITION, VALUE, LEFT, RIGHT)
+// Helper function to generate JSON for value inputs (unchanged - these don't create chains)
 function generateValueJson(block) {
   if (!block) return null;
 
@@ -192,11 +209,21 @@ function generateJson(workspace) {
   const startBlock = topBlocks.find(block => block.type === 'start');
   
   if (!startBlock) {
-    return { error: 'No start block found' };
+    return JSON.stringify({ error: 'No start block found' }, null, 2);
   }
 
-  const jsonOutput = blockToJson(startBlock);
-  return JSON.stringify(jsonOutput, null, 2);
+  console.log('Generating JSON from workspace...');
+  const startTime = performance.now();
+  
+  const jsonOutput = blockToJson(startBlock, true);
+  
+  const endTime = performance.now();
+  const jsonString = JSON.stringify(jsonOutput, null, 2);
+  
+  console.log(`JSON generation completed in ${(endTime - startTime).toFixed(2)}ms`);
+  console.log(`JSON size: ${jsonString.length} characters`);
+  
+  return jsonString;
 }
 
 // Export function for use in index.html

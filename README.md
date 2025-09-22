@@ -53,3 +53,4 @@ Drag blocks from the toolbox to create your animation sequence. The program alwa
 - add usb upload support for the display
 - fix electron focus issue where after loading a folder you need to switch to another window and back to be able to edit text fields
 - GPIO trigger block is currently broken and does nothing or is unpredictable
+- fix json loading where the compare blocks don't retain the first input

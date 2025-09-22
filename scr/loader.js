@@ -1,19 +1,15 @@
-// loader.js - Fixed version with better error handling and positioning
 
-// Helper function to create a block from JSON without rendering
 function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
   if (!json || !json.type) {
     console.warn('Invalid block JSON:', json);
     return null;
   }
 
-  // Prevent duplicate processing of the same block ID
   if (json.id && processedBlocks.has(json.id)) {
     console.warn(`Block ${json.id} already processed, skipping`);
     return workspace.getBlockById(json.id);
   }
 
-  // Create the block
   let block;
   try {
     block = workspace.newBlock(json.type);
@@ -26,7 +22,6 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
     return null;
   }
 
-  // Set block-specific fields
   try {
     switch (json.type) {
       case 'display_image':
@@ -83,7 +78,7 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
         break;
 
       case 'compare':
-        // Handle LEFT input - support both numbers and objects
+
         if (json.left !== undefined) {
           if (typeof json.left === 'number') {
             const numberBlock = workspace.newBlock('number');
@@ -99,8 +94,7 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
         }
         
         block.setFieldValue(json.operator || 'EQ', 'OPERATOR');
-        
-        // Handle RIGHT input - support both numbers and objects
+
         if (json.right !== undefined) {
           if (typeof json.right === 'number') {
             const numberBlock = workspace.newBlock('number');
@@ -187,7 +181,7 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
         break;
 
       case 'break':
-        // No additional setup needed
+
         break;
 
       case 'gpio':
@@ -234,7 +228,7 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
 
       case 'set_color':
         if (json.color && typeof json.color === 'string') {
-          // Check if it's a predefined color first
+
           const predefinedColors = [
             "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", 
             "#FFFFFF", "#FF8000", "#FF69B4", "#32CD32", "#8B4513", "#000000", "RANDOM"
@@ -282,7 +276,6 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
     return null;
   }
 
-  // Initialize SVG (but don't render yet)
   try {
     block.initSvg();
   } catch (e) {
@@ -290,7 +283,6 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
     return null;
   }
 
-  // Handle next block in the chain AFTER the current block is fully set up
   if (json.next) {
     const nextBlock = createBlockFromJson(workspace, json.next, processedBlocks);
     if (nextBlock && block.nextConnection && nextBlock.previousConnection) {
@@ -306,14 +298,12 @@ function createBlockFromJson(workspace, json, processedBlocks = new Set()) {
   return block;
 }
 
-// Helper function to create value blocks
 function createValueBlockFromJson(workspace, json, processedBlocks = new Set()) {
   if (!json || !json.type) {
     console.warn('Invalid value block JSON:', json);
     return null;
   }
 
-  // Check for already processed blocks
   if (json.id && processedBlocks.has(json.id)) {
     return workspace.getBlockById(json.id);
   }
@@ -351,8 +341,7 @@ function createValueBlockFromJson(workspace, json, processedBlocks = new Set()) 
       case 'compare':
         block = workspace.newBlock('compare');
         block.setFieldValue(json.operator || 'EQ', 'OPERATOR');
-        
-        // Handle LEFT input - support both numbers and objects
+
         if (json.left !== undefined) {
           if (typeof json.left === 'number') {
             const numberBlock = workspace.newBlock('number');
@@ -366,8 +355,7 @@ function createValueBlockFromJson(workspace, json, processedBlocks = new Set()) 
             }
           }
         }
-        
-        // Handle RIGHT input - support both numbers and objects
+
         if (json.right !== undefined) {
           if (typeof json.right === 'number') {
             const numberBlock = workspace.newBlock('number');
@@ -406,25 +394,21 @@ function createValueBlockFromJson(workspace, json, processedBlocks = new Set()) 
   return block;
 }
 
-// Function to properly reset workspace state and clear gestures
 function resetWorkspaceState(workspace) {
   try {
-    // Clear any active gestures
+
     if (workspace.currentGesture_) {
       workspace.currentGesture_.cancel();
       workspace.currentGesture_ = null;
       console.debug('Cancelled and cleared active gesture');
     }
-    
-    // Clear gesture state from workspace
+
     if (workspace.gestureMap_) {
       workspace.gestureMap_.clear();
     }
-    
-    // Reset any drag state
+
     workspace.isDragging_ = false;
-    
-    // Force a clean redraw
+
     setTimeout(() => {
       try {
         workspace.resize();
@@ -440,33 +424,27 @@ function resetWorkspaceState(workspace) {
   }
 }
 
-// Main function to load JSON into workspace
 function loadJson(workspace, jsonString) {
   console.debug('Starting JSON load process');
   
   try {
-    // Parse JSON first to validate it
+
     const json = JSON.parse(jsonString);
     if (json.error) {
       console.error('Invalid JSON: No start block found');
       return false;
     }
 
-    // Disable all Blockly events during loading
     Blockly.Events.disable();
     console.debug('Disabled Blockly events');
 
-    // Clear the workspace completely
     workspace.clear();
     console.debug('Cleared workspace');
 
-    // Reset workspace state immediately after clearing
     resetWorkspaceState(workspace);
 
-    // Create a set to track processed blocks and prevent duplicates
     const processedBlocks = new Set();
 
-    // Create the block structure from JSON
     console.debug('Creating blocks from JSON...');
     const startBlock = createBlockFromJson(workspace, json, processedBlocks);
     if (!startBlock) {
@@ -476,20 +454,16 @@ function loadJson(workspace, jsonString) {
 
     console.debug(`Created start block: ${startBlock.id}`);
 
-    // Position the start block at a visible location
     startBlock.moveBy(50, 50);
     console.debug('Positioned start block');
 
-    // Get all blocks and log them
     const allBlocks = workspace.getAllBlocks(false);
     console.debug(`Total blocks created: ${allBlocks.length}`);
-    
-    // Log each block for debugging
+
     allBlocks.forEach((block, index) => {
       console.debug(`Block ${index}: ${block.type} (${block.id})`);
     });
 
-    // Render all blocks in the workspace with better error handling
     console.debug('Rendering all blocks...');
     allBlocks.forEach((block, index) => {
       try {
@@ -500,7 +474,6 @@ function loadJson(workspace, jsonString) {
       }
     });
 
-    // Force workspace to center on content
     setTimeout(() => {
       try {
         workspace.scrollCenter();
@@ -518,15 +491,13 @@ function loadJson(workspace, jsonString) {
     console.error('JSON that failed to load:', jsonString);
     return false;
   } finally {
-    // Re-enable events after a longer delay to ensure everything is settled
+
     setTimeout(() => {
       Blockly.Events.enable();
       console.debug('Re-enabled Blockly events');
-      
-      // Final reset of workspace state
+
       resetWorkspaceState(workspace);
-      
-      // Final check - log visible blocks
+
       const visibleBlocks = workspace.getTopBlocks(true);
       console.debug(`Visible top-level blocks: ${visibleBlocks.length}`);
       visibleBlocks.forEach(block => {
@@ -537,5 +508,4 @@ function loadJson(workspace, jsonString) {
   }
 }
 
-// Export function for use in index.html
 window.loadJson = loadJson;

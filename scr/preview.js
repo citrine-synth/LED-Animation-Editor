@@ -1,15 +1,17 @@
-
+// preview.js - LED Display Preview System for 32x24 display with .raw file saving
 
 class LEDPreviewSystem {
-
+  // Make constructor async to handle async init
   constructor() {
     this.canvas = document.getElementById('previewCanvas');
     this.ctx = this.canvas.getContext('2d');
     this.ctx.imageSmoothingEnabled = false;
-
+    
+    // GPIO State Management
     this.gpioStates = {};
     this.gpioGrid = document.getElementById('gpioGrid');
-
+    
+    // Image Storage
     this.loadedImages = new Map();
     this.loadedAnimations = new Map();
     this.previewRunning = false;
@@ -18,7 +20,8 @@ class LEDPreviewSystem {
     this.currentColor = '#FFFFFF';
     this.variables = new Map();
     this.errorImageData = null; // Store error image data
-
+    
+    // Timer and status tracking
     this.startTime = 0;
     this.timerInterval = null;
     
@@ -29,6 +32,7 @@ class LEDPreviewSystem {
     this.loadErrorImage(); // Load error image during initialization
   }
 
+  // Initialize GPIO controls (pins 0-9 for common use)
   initGPIOControls() {
     for (let pin = 0; pin <= 9; pin++) {
       this.gpioStates[pin] = false;
@@ -56,37 +60,43 @@ class LEDPreviewSystem {
     }
   }
 
+  // Load error image asynchronously
   async loadErrorImage() {
-    try {
-      const response = await fetch('./scr/error.raw');
-      if (response.ok) {
-        const arrayBuffer = await response.arrayBuffer();
-        this.errorImageData = new Uint8Array(arrayBuffer);
-        console.log('Error image loaded successfully');
-      } else {
-        console.warn('Could not load error.raw file');
-      }
-    } catch (error) {
-      console.warn('Failed to load error.raw:', error);
-    }
-  }
+  // 96-byte error image data (32x24 pixels, 1-bit monochrome)
+  
+  this.errorImageData = new Uint8Array([
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x01, 0xE6, 0x31, 0x00, 0x01, 0x08, 0x4B, 0x00,
+	0x01, 0xCE, 0x11, 0x00, 0x01, 0x09, 0x21, 0x00, 0x01, 0xE6, 0x7B, 0x80,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE8, 0x98, 0x49, 0x9F,
+	0x4D, 0xA0, 0x6A, 0x44, 0x4A, 0xAC, 0x5A, 0x44, 0x48, 0xA4, 0x4A, 0x44,
+	0xE8, 0x98, 0x49, 0x84, 0x00, 0x00, 0x00, 0x00, 0x0F, 0x32, 0x52, 0xE0,
+	0x08, 0x4A, 0x5A, 0x90, 0x0E, 0x4A, 0x56, 0x90, 0x08, 0x4A, 0x52, 0x90,
+	0x08, 0x31, 0x92, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
+  ]);
+  console.log('Error image loaded from embedded data');
+}
+
+  // Initialize the LED display with a test pattern
   initDisplay() {
     this.ctx.fillStyle = '#000';
     this.ctx.fillRect(0, 0, 32, 24);
-
+    
+    // Add just a few test pixels using current color (white by default)
     this.ctx.fillStyle = this.currentColor;
-
+    // Corner pixels
     this.ctx.fillRect(0, 0, 1, 1);       // Top-left
     this.ctx.fillRect(31, 0, 1, 1);      // Top-right
     this.ctx.fillRect(0, 23, 1, 1);      // Bottom-left
     this.ctx.fillRect(31, 23, 1, 1);     // Bottom-right
-
+    // Center pixel
     this.ctx.fillRect(16, 12, 1, 1);     // Center
   }
 
+  // Initialize status display
   initStatusDisplay() {
-
+    // Create status elements if they don't exist
     let statusElement = document.getElementById('previewStatus');
     if (!statusElement) {
       statusElement = document.createElement('div');
@@ -98,7 +108,8 @@ class LEDPreviewSystem {
           <span id="statusTimer">00:00</span>
         </div>
       `;
-
+      
+      // Insert after the display-info div
       const displayInfo = document.querySelector('.display-info');
       displayInfo.parentNode.insertBefore(statusElement, displayInfo.nextSibling);
     }
@@ -106,6 +117,7 @@ class LEDPreviewSystem {
     this.updateStatusDisplay('Stopped', '00:00');
   }
 
+  // Update status display
   updateStatusDisplay(status, time = null) {
     const statusText = document.getElementById('statusText');
     const timerText = document.getElementById('statusTimer');
@@ -119,12 +131,14 @@ class LEDPreviewSystem {
     }
   }
 
+  // Format time for display
   formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
+  // Start timer
   startTimer() {
     this.startTime = Date.now();
     this.timerInterval = setInterval(() => {
@@ -135,6 +149,7 @@ class LEDPreviewSystem {
     }, 1000);
   }
 
+  // Stop timer
   stopTimer() {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
@@ -142,6 +157,7 @@ class LEDPreviewSystem {
     }
   }
 
+  // Setup event listeners
   setupEventListeners() {
     document.getElementById('loadSingleRawBtn').addEventListener('change', (event) => {
       this.loadSingleRawFiles(event);
@@ -168,6 +184,7 @@ class LEDPreviewSystem {
     });
   }
 
+  // Create a save dialog for a single file
   saveRawFile(filename, data) {
     const blob = new Blob([data], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
@@ -178,25 +195,30 @@ class LEDPreviewSystem {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-
+    
+    // Clean up the URL after a short delay
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  // Create a save dialog for multiple files as a ZIP
   async saveRawFilesAsZip(files, zipName = 'converted_raw_files.zip') {
     try {
-
+      // Load JSZip if not already loaded
       if (typeof JSZip === 'undefined') {
         await this.loadJSZip();
       }
 
       const zip = new JSZip();
-
+      
+      // Add each file to the ZIP
       files.forEach(file => {
         zip.file(file.name, file.data);
       });
-
+      
+      // Generate the ZIP file
       const zipBlob = await zip.generateAsync({ type: 'blob' });
-
+      
+      // Create download
       const url = URL.createObjectURL(zipBlob);
       const a = document.createElement('a');
       a.href = url;
@@ -205,7 +227,8 @@ class LEDPreviewSystem {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-
+      
+      // Clean up
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       
       console.log(`Created download for ${zipName}`);
@@ -215,6 +238,7 @@ class LEDPreviewSystem {
     }
   }
 
+  // Load and convert ZIP file containing PNG frames to raw files
   async loadZipFile(event) {
     const file = event.target.files[0];
     if (!file || !file.name.toLowerCase().endsWith('.zip')) {
@@ -223,7 +247,7 @@ class LEDPreviewSystem {
     }
 
     try {
-
+      // Load JSZip dynamically if not already loaded
       if (typeof JSZip === 'undefined') {
         await this.loadJSZip();
       }
@@ -233,7 +257,8 @@ class LEDPreviewSystem {
       
       const pngFrames = [];
       const framePattern = /^pixil-frame-(\d+)\.png$/i;
-
+      
+      // Find all PNG frames
       zipContents.forEach((relativePath, zipEntry) => {
         const match = relativePath.match(framePattern);
         if (match && !zipEntry.dir) {
@@ -250,14 +275,16 @@ class LEDPreviewSystem {
         alert('No PNG frames found in ZIP file. Expected files named pixil-frame-0.png, pixil-frame-1.png, etc.');
         return;
       }
-
+      
+      // Sort frames by number
       pngFrames.sort((a, b) => a.number - b.number);
       
       console.log(`Found ${pngFrames.length} PNG frames in ZIP file`);
       
       const convertedFrames = [];
       const animationName = file.name.replace('.zip', '');
-
+      
+      // Convert each frame
       for (const frame of pngFrames) {
         try {
           const pngBlob = await frame.entry.async('blob');
@@ -277,9 +304,10 @@ class LEDPreviewSystem {
       }
       
       if (convertedFrames.length > 0) {
-
+        // Add to loaded animations for preview
         this.loadedAnimations.set(animationName, convertedFrames);
-
+        
+        // Show save dialog for .raw files
         const shouldSave = confirm(`Converted ${convertedFrames.length} frames from ZIP file.\nAnimation '${animationName}' is now available for preview.\n\nWould you like to download the converted .raw files as a ZIP?`);
         
         if (shouldSave) {
@@ -295,10 +323,12 @@ class LEDPreviewSystem {
       console.error('Error processing ZIP file:', error);
       alert('Error processing ZIP file: ' + error.message);
     }
-
+    
+    // Reset file input
     event.target.value = '';
   }
 
+  // Load JSZip library dynamically
   async loadJSZip() {
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
@@ -309,6 +339,7 @@ class LEDPreviewSystem {
     });
   }
 
+  // Convert PNG blob to raw data
   async convertPngBlobToRaw(blob, threshold = 128) {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -317,17 +348,21 @@ class LEDPreviewSystem {
       
       img.onload = () => {
         try {
-
+          // Set canvas to 32x24
           canvas.width = 32;
           canvas.height = 24;
-
+          
+          // Draw image scaled to fit
           ctx.drawImage(img, 0, 0, 32, 24);
-
+          
+          // Get image data
           const imageData = ctx.getImageData(0, 0, 32, 24);
           const pixels = imageData.data;
-
+          
+          // Create output data array (96 bytes for 768 pixels)
           const rawData = new Uint8Array(96);
-
+          
+          // Convert each pixel to 1-bit
           for (let y = 0; y < 24; y++) {
             for (let x = 0; x < 32; x++) {
               const pixelIndex = (y * 32 + x) * 4;
@@ -335,9 +370,11 @@ class LEDPreviewSystem {
               const g = pixels[pixelIndex + 1];
               const b = pixels[pixelIndex + 2];
               const alpha = pixels[pixelIndex + 3];
-
+              
+              // Convert to grayscale using luminance formula
               const brightness = Math.floor(0.299 * r + 0.587 * g + 0.114 * b);
-
+              
+              // Apply alpha channel (transparent pixels = black)
               const isOn = (alpha > 128) && (brightness > threshold);
               
               if (isOn) {
@@ -356,7 +393,8 @@ class LEDPreviewSystem {
       };
       
       img.onerror = () => reject(new Error('Failed to load image'));
-
+      
+      // Load the image from blob
       img.src = URL.createObjectURL(blob);
     });
   }
@@ -374,7 +412,8 @@ class LEDPreviewSystem {
           const path = file.webkitRelativePath || file.name;
           const pathParts = path.split('/');
           const rawFilename = file.name.replace('.png', '.raw');
-
+          
+          // Store for saving
           convertedFiles.push({
             name: rawFilename,
             data: rawData,
@@ -383,7 +422,7 @@ class LEDPreviewSystem {
           });
           
           if (pathParts.length > 1) {
-
+            // Animation frame
             const folderName = pathParts[pathParts.length - 2];
             
             if (!animationFolders.has(folderName)) {
@@ -403,7 +442,7 @@ class LEDPreviewSystem {
               data: rawData
             });
           } else {
-
+            // Single image
             this.loadedImages.set(rawFilename, rawData);
           }
           
@@ -413,7 +452,8 @@ class LEDPreviewSystem {
         }
       }
     }
-
+    
+    // Sort animation frames
     for (const [folderName, frames] of this.loadedAnimations) {
       frames.sort((a, b) => {
         const aNum = parseInt(a.name.match(/\d+/)?.[0] || '0');
@@ -427,10 +467,10 @@ class LEDPreviewSystem {
       
       if (shouldSave) {
         if (convertedFiles.length === 1) {
-
+          // Single file - direct download
           this.saveRawFile(convertedFiles[0].name, convertedFiles[0].data);
         } else {
-
+          // Multiple files - ZIP download
           await this.saveRawFilesAsZip(convertedFiles, 'converted_png_to_raw.zip');
         }
       }
@@ -439,10 +479,12 @@ class LEDPreviewSystem {
     } else {
       alert('No PNG files were successfully converted.');
     }
-
+    
+    // Reset file input
     event.target.value = '';
   }
 
+  // Convert PNG file to 1-bit monochrome raw data
   async convertPngToRaw(file, threshold = 128) {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -451,17 +493,21 @@ class LEDPreviewSystem {
       
       img.onload = () => {
         try {
-
+          // Set canvas to 32x24
           canvas.width = 32;
           canvas.height = 24;
-
+          
+          // Draw image scaled to fit
           ctx.drawImage(img, 0, 0, 32, 24);
-
+          
+          // Get image data
           const imageData = ctx.getImageData(0, 0, 32, 24);
           const pixels = imageData.data;
-
+          
+          // Create output data array (96 bytes for 768 pixels)
           const rawData = new Uint8Array(96);
-
+          
+          // Convert each pixel to 1-bit
           for (let y = 0; y < 24; y++) {
             for (let x = 0; x < 32; x++) {
               const pixelIndex = (y * 32 + x) * 4;
@@ -469,9 +515,11 @@ class LEDPreviewSystem {
               const g = pixels[pixelIndex + 1];
               const b = pixels[pixelIndex + 2];
               const alpha = pixels[pixelIndex + 3];
-
+              
+              // Convert to grayscale using luminance formula
               const brightness = Math.floor(0.299 * r + 0.587 * g + 0.114 * b);
-
+              
+              // Apply alpha channel (transparent pixels = black)
               const isOn = (alpha > 128) && (brightness > threshold);
               
               if (isOn) {
@@ -490,7 +538,8 @@ class LEDPreviewSystem {
       };
       
       img.onerror = () => reject(new Error('Failed to load image'));
-
+      
+      // Load the image
       img.src = URL.createObjectURL(file);
     });
   }
@@ -506,9 +555,10 @@ class LEDPreviewSystem {
           const arrayBuffer = await file.arrayBuffer();
           const path = file.webkitRelativePath || file.name;
           const pathParts = path.split('/');
-
+          
+          // Check if file is in a subfolder (more than just root folder + filename)
           if (pathParts.length > 2) {
-
+            // Animation frame in subfolder
             const folderName = pathParts[pathParts.length - 2];
             const filename = pathParts[pathParts.length - 1];
             
@@ -521,7 +571,7 @@ class LEDPreviewSystem {
               data: new Uint8Array(arrayBuffer)
             });
           } else {
-
+            // Single image (either no folder or just in root folder)
             this.loadedImages.set(file.name, new Uint8Array(arrayBuffer));
           }
         } catch (error) {
@@ -529,7 +579,8 @@ class LEDPreviewSystem {
         }
       }
     }
-
+    
+    // Sort animation frames
     for (const [folderName, frames] of this.loadedAnimations) {
       frames.sort((a, b) => {
         const aNum = parseInt(a.name.match(/\d+/)?.[0] || '0');
@@ -539,10 +590,11 @@ class LEDPreviewSystem {
     }
     
     alert(`Loaded ${this.loadedImages.size} images and ${this.loadedAnimations.size} animations (1-bit monochrome format)`);
-
+    // Reset file input
     event.target.value = '';
   }
 
+  // Load individual .raw files (not in folders)
   async loadSingleRawFiles(event) {
     const files = Array.from(event.target.files);
     let loadedCount = 0;
@@ -556,11 +608,13 @@ class LEDPreviewSystem {
           const data = new Uint8Array(arrayBuffer);
           
           console.log(`Loading ${file.name}: ${data.length} bytes`);
-
+          
+          // Validate file size (should be 96 bytes for 32x24 1-bit)
           if (data.length !== 96) {
             console.warn(`Warning: ${file.name} is ${data.length} bytes, expected 96 bytes for 32x24 1-bit image`);
           }
-
+          
+          // Store as individual image (always goes to loadedImages)
           this.loadedImages.set(file.name, data);
           loadedCount++;
           
@@ -576,22 +630,24 @@ class LEDPreviewSystem {
     console.log('Available images:', Array.from(this.loadedImages.keys()));
     
     alert(`Loaded ${loadedCount} individual .raw files for use with Display Image blocks`);
-
+    
+    // Reset file input
     event.target.value = '';
     this.resetFocusState();
   }
 
+  // Render monochrome 1-bit image data to canvas with current color
   renderImage(imageData) {
     const totalPixels = 32 * 24;
     const expectedBytes = Math.ceil(totalPixels / 8); // 96 bytes for 768 pixels
     
     if (!imageData || imageData.length !== expectedBytes) {
       console.warn(`Invalid image data. Expected ${expectedBytes} bytes for 1-bit monochrome, got ${imageData?.length || 0}`);
-
+      // Use preloaded error image if available, otherwise fallback
       if (this.errorImageData && this.errorImageData.length === expectedBytes) {
         imageData = this.errorImageData;
       } else {
-
+        // Fallback error pattern
         this.ctx.fillStyle = '#FF0000';
         this.ctx.fillRect(0, 0, 32, 24);
         this.ctx.fillStyle = '#FFFFFF';
@@ -603,9 +659,11 @@ class LEDPreviewSystem {
     
     const imageDataArray = this.ctx.createImageData(32, 24);
     const data = imageDataArray.data;
-
+    
+    // Parse current color
     const color = this.hexToRgb(this.currentColor) || { r: 255, g: 255, b: 255 };
-
+    
+    // Process 1-bit per pixel format (packed bits)
     for (let i = 0; i < totalPixels; i++) {
       const byteIndex = Math.floor(i / 8);
       const bitIndex = i % 8;
@@ -620,6 +678,7 @@ class LEDPreviewSystem {
     this.ctx.putImageData(imageDataArray, 0, 0);
   }
 
+  // Display a single image
   displayImage(filename) {
     const imageData = this.loadedImages.get(filename);
     if (imageData) {
@@ -627,12 +686,13 @@ class LEDPreviewSystem {
       console.log(`Displayed image: ${filename}`);
     } else {
       console.warn(`Image not found: ${filename}`);
-
+      
+      // Try to display error image if available
       if (this.errorImageData) {
         this.renderImage(this.errorImageData);
         console.log('Displayed error image');
       } else {
-
+        // Fallback to the current red square with "?"
         this.ctx.fillStyle = '#FF0000';
         this.ctx.fillRect(0, 0, 32, 24);
         this.ctx.fillStyle = '#FFFFFF';
@@ -642,6 +702,7 @@ class LEDPreviewSystem {
     }
   }
 
+  // Play animation with improved timing
   playAnimation(folderName, duration = 2000) {
     const animation = this.loadedAnimations.get(folderName);
     if (!animation || animation.length === 0) {
@@ -663,6 +724,7 @@ class LEDPreviewSystem {
           return;
         }
 
+        // Check if we've played for the requested duration
         const elapsed = Date.now() - startTime;
         if (elapsed >= duration) {
           console.log(`Animation '${folderName}' completed after ${elapsed}ms`);
@@ -670,9 +732,11 @@ class LEDPreviewSystem {
           return;
         }
 
+        // Show current frame
         this.renderImage(animation[currentFrame].data);
         console.log(`Animation '${folderName}' showing frame ${currentFrame + 1}/${animation.length}`);
-
+        
+        // Move to next frame (loop back to 0 if at end)
         currentFrame = (currentFrame + 1) % animation.length;
         
         this.currentAnimationTimeout = setTimeout(playFrame, frameTime);
@@ -682,6 +746,7 @@ class LEDPreviewSystem {
     });
   }
 
+  // Wait function
   wait(ms) {
     return new Promise(resolve => {
       if (this.previewRunning) {
@@ -692,6 +757,7 @@ class LEDPreviewSystem {
     });
   }
 
+  // Set color filter
   setColor(color) {
     if (color === 'RANDOM') {
       const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF'];
@@ -704,6 +770,7 @@ class LEDPreviewSystem {
     console.log(`Color set to: ${this.currentColor}`);
   }
 
+  // Helper function to convert hex to RGB
   hexToRgb(hex) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
@@ -713,6 +780,7 @@ class LEDPreviewSystem {
     } : null;
   }
 
+  // Execute a single block instruction
   async executeBlock(block) {
     if (!this.previewRunning) return;
 
@@ -810,26 +878,37 @@ class LEDPreviewSystem {
         console.log(`Unhandled block type: ${block.type}`);
     }
 
+    // Execute next block in chain
     if (block.next && this.previewRunning) {
       await this.executeBlock(block.next);
     }
   }
 
-  async executeBlocks(blocks) {
-    if (!Array.isArray(blocks) || blocks.length === 0) {
-      console.log('executeBlocks: No blocks to execute');
+  // Execute a list of blocks
+  // Execute blocks (can be single block or array)
+async executeBlocks(blocks) {
+  if (!blocks) {
+    console.log('executeBlocks: No blocks to execute');
+    return;
+  }
+  
+  // Handle both single block and array cases
+  if (Array.isArray(blocks)) {
+    if (blocks.length === 0) {
+      console.log('executeBlocks: Empty block array');
       return;
     }
-    
-    console.log(`executeBlocks: Starting execution of ${blocks.length} blocks`);
-
-    if (blocks.length > 0) {
-      await this.executeBlock(blocks[0]);
-    }
-    
-    console.log('executeBlocks: Completed block chain execution');
+    console.log(`executeBlocks: Starting execution of ${blocks.length} blocks in array`);
+    await this.executeBlock(blocks[0]);
+  } else {
+    console.log('executeBlocks: Starting execution of single block');
+    await this.executeBlock(blocks);
   }
+  
+  console.log('executeBlocks: Completed block execution');
+}
 
+  // Evaluate a value (number, variable, expression)
   evaluateValue(value) {
     if (typeof value === 'number') {
       return value;
@@ -871,6 +950,7 @@ class LEDPreviewSystem {
     return 0;
   }
 
+  // Set GPIO pin state (visual only)
   setGPIO(pin, state) {
     if (pin >= 0 && pin <= 9) {
       const isHigh = state === 'HIGH';
@@ -888,12 +968,13 @@ class LEDPreviewSystem {
     }
   }
 
+  // Run preview of the current Blockly program
   async runPreview() {
-
+    // Prevent multiple simultaneous executions
     if (this.previewRunning) {
       console.log('Preview already running, stopping current execution first');
       this.stopPreview();
-
+      // Wait a moment for cleanup
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
@@ -912,13 +993,16 @@ class LEDPreviewSystem {
       this.updateStatusDisplay('Running', '00:00');
       this.startTimer();
       console.log('Starting preview execution, previewRunning =', this.previewRunning);
-
+      
+      // Clear display
       this.ctx.fillStyle = '#000';
       this.ctx.fillRect(0, 0, 32, 24);
-
+      
+      // Reset state
       this.variables.clear();
       this.currentColor = '#FFFFFF';
-
+      
+      // Execute the program
       if (program.actions) {
         console.log('About to execute program actions');
         await this.executeBlocks(program.actions);
@@ -926,7 +1010,8 @@ class LEDPreviewSystem {
       } else {
         console.log('No actions to execute in program');
       }
-
+      
+      // Stop preview automatically when execution completes (unless there was a forever loop)
       if (this.previewRunning) {
         console.log('Auto-stopping preview after completion');
         this.stopPreview();
@@ -942,6 +1027,7 @@ class LEDPreviewSystem {
     }
   }
 
+  // Stop preview execution
   stopPreview() {
     this.previewRunning = false;
     this.stopTimer();
@@ -957,19 +1043,23 @@ class LEDPreviewSystem {
     console.log('Preview stopped');
   }
 
+  // Reset focus state to fix Electron text field issues
   resetFocusState() {
-
+    // Force blur all elements first
     if (document.activeElement) {
       document.activeElement.blur();
     }
-
+    
+    // Wait a tick then try to restore normal focus behavior
     setTimeout(() => {
-
+      // Re-enable text selection and input
       document.body.style.userSelect = 'auto';
       document.body.style.webkitUserSelect = 'auto';
-
+      
+      // Force a window focus event
       window.focus();
-
+      
+      // Try clicking somewhere neutral to reset focus
       const event = new MouseEvent('click', {
         view: window,
         bubbles: true,
@@ -980,13 +1070,15 @@ class LEDPreviewSystem {
   }
 }
 
+// Initialize the preview system when the page loads
 let previewSystem;
 
 document.addEventListener('DOMContentLoaded', async () => {
-
+  // Wait a bit to ensure other scripts are loaded
   setTimeout(async () => {
     previewSystem = await new LEDPreviewSystem();
   }, 100);
 });
 
+// Export for global access
 window.LEDPreviewSystem = LEDPreviewSystem;

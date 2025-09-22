@@ -1,6 +1,7 @@
 // preview.js - LED Display Preview System for 32x24 display with .raw file saving
 
 class LEDPreviewSystem {
+  // Make constructor async to handle async init
   constructor() {
     this.canvas = document.getElementById('previewCanvas');
     this.ctx = this.canvas.getContext('2d');
@@ -18,6 +19,7 @@ class LEDPreviewSystem {
     this.currentWaitTimeout = null; // Separate timeout for waits
     this.currentColor = '#FFFFFF';
     this.variables = new Map();
+    this.errorImageData = null; // Store error image data
     
     // Timer and status tracking
     this.startTime = 0;
@@ -27,6 +29,7 @@ class LEDPreviewSystem {
     this.initDisplay();
     this.setupEventListeners();
     this.initStatusDisplay();
+    this.loadErrorImage(); // Load error image during initialization
   }
 
   // Initialize GPIO controls (pins 0-9 for common use)
@@ -54,6 +57,22 @@ class LEDPreviewSystem {
       });
       
       this.gpioGrid.appendChild(gpioItem);
+    }
+  }
+
+  // Load error image asynchronously
+  async loadErrorImage() {
+    try {
+      const response = await fetch('./scr/error.raw');
+      if (response.ok) {
+        const arrayBuffer = await response.arrayBuffer();
+        this.errorImageData = new Uint8Array(arrayBuffer);
+        console.log('Error image loaded successfully');
+      } else {
+        console.warn('Could not load error.raw file');
+      }
+    } catch (error) {
+      console.warn('Failed to load error.raw:', error);
     }
   }
 
@@ -622,13 +641,18 @@ class LEDPreviewSystem {
     
     if (!imageData || imageData.length !== expectedBytes) {
       console.warn(`Invalid image data. Expected ${expectedBytes} bytes for 1-bit monochrome, got ${imageData?.length || 0}`);
-      // Fill with error pattern
-      this.ctx.fillStyle = '#FF0000';
-      this.ctx.fillRect(0, 0, 32, 24);
-      this.ctx.fillStyle = '#FFFFFF';
-      this.ctx.font = '8px monospace';
-      this.ctx.fillText('ERR', 12, 14);
-      return;
+      // Use preloaded error image if available, otherwise fallback
+      if (this.errorImageData && this.errorImageData.length === expectedBytes) {
+        imageData = this.errorImageData;
+      } else {
+        // Fallback error pattern
+        this.ctx.fillStyle = '#FF0000';
+        this.ctx.fillRect(0, 0, 32, 24);
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.font = '8px monospace';
+        this.ctx.fillText('ERR', 12, 14);
+        return;
+      }
     }
     
     const imageDataArray = this.ctx.createImageData(32, 24);
@@ -660,12 +684,19 @@ class LEDPreviewSystem {
       console.log(`Displayed image: ${filename}`);
     } else {
       console.warn(`Image not found: ${filename}`);
-      // Show placeholder
-      this.ctx.fillStyle = '#FF0000';
-      this.ctx.fillRect(0, 0, 32, 24);
-      this.ctx.fillStyle = '#FFFFFF';
-      this.ctx.font = '8px monospace';
-      this.ctx.fillText('?', 14, 14);
+      
+      // Try to display error image if available
+      if (this.errorImageData) {
+        this.renderImage(this.errorImageData);
+        console.log('Displayed error image');
+      } else {
+        // Fallback to the current red square with "?"
+        this.ctx.fillStyle = '#FF0000';
+        this.ctx.fillRect(0, 0, 32, 24);
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.font = '8px monospace';
+        this.ctx.fillText('?', 14, 14);
+      }
     }
   }
 
@@ -1033,10 +1064,10 @@ class LEDPreviewSystem {
 // Initialize the preview system when the page loads
 let previewSystem;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Wait a bit to ensure other scripts are loaded
-  setTimeout(() => {
-    previewSystem = new LEDPreviewSystem();
+  setTimeout(async () => {
+    previewSystem = await new LEDPreviewSystem();
   }, 100);
 });
 

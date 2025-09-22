@@ -1,4 +1,4 @@
-
+// generator.js - Updated to handle if statements and variables for LED animation editor
 
 // Initialize JavaScript generator
 Blockly.JavaScript = new Blockly.Generator('JavaScript');

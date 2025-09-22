@@ -37,6 +37,10 @@ The editor supports several ways to load images:
 
 All images are converted to 32x24 pixels in 1-bit monochrome format.
 
+## View.exe
+
+This tool allows you to view the image in a converted file. just drag-drop the file you want to view onto it.
+
 ### Creating programs
 
 Drag blocks from the toolbox to create your animation sequence. The program always starts with a "Start Program" block.
